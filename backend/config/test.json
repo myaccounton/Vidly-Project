@@ -1,4 +1,4 @@
 {
-  "jwtPrivateKey": "yourSecretPrivateKey123",
-  "db": "mongodb+srv://tejasgchaudhari_db_user:tiger12@cluster0.fc07kr2.mongodb.net/vidly_tests?retryWrites=true&w=majority"
+  "jwtPrivateKey": "jwtPrivateKey",
+  "db": "MONGODB_URI"
 }
