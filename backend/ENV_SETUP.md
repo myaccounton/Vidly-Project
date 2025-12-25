@@ -4,10 +4,9 @@
 
 Create a `.env` file in the `backend` directory with the following variables:
 
-```
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database_name?retryWrites=true&w=majority
-jwtPrivateKey=yourSecretPrivateKey123
-```
+- `MONGODB_URI` - Your MongoDB Atlas connection string
+- `jwtPrivateKey` - Your JWT private key for authentication
+
 
 ## For Test Environment
 
