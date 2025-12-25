@@ -6,7 +6,8 @@ const logger = require('./startup/logger');
 const app = require('./app'); // just the express app
 require('./startup/prod')(app);
 
-const db = config.get('db');
+// Use environment variable first, then config fallback
+const db = process.env.MONGODB_URI || config.get('db');
 
 // Connect to MongoDB
 mongoose.connect(db)
