@@ -1,0 +1,7 @@
+{
+  "jwtPrivateKey": "yourSecretPrivateKey123",
+  "db":"mongodb://localhost/vidly",
+  "requireAuth": true
+}
+
+
