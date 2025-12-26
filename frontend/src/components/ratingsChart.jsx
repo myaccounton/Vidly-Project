@@ -26,7 +26,7 @@ const RatingsChart = ({ movies }) => {
   return (
     <div className="card shadow-sm mb-4">
      <div className="card-body">
-      <h5 className="card-title mb-3">Top Rated Movies</h5>
+      <h5 className="card-title mb-3">Top Priced Movies</h5>
         <ResponsiveContainer width="100%" height={260}>
           <BarChart
             data={data}
