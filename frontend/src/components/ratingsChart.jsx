@@ -20,7 +20,7 @@ const RatingsChart = ({ movies }) => {
     .slice(0, TOP_COUNT)
     .map(movie => ({
       name: movie.title,
-      rating: movie.dailyRentalRate
+      Rate: movie.dailyRentalRate
     }));
 
   return (
@@ -36,13 +36,13 @@ const RatingsChart = ({ movies }) => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" hide />
             <YAxis domain={[0, 10]} />
-            <Tooltip formatter={value => [`Rating: ${value}`, ""]} />
+            <Tooltip formatter={value => [`Rate: ${value}`, ""]} />
             <Bar
-              dataKey="rating"
+              dataKey="Rate"
               fill="#0d6efd"
               radius={[6, 6, 0, 0]}
             >
-              <LabelList dataKey="rating" position="top" />
+              <LabelList dataKey="Rate" position="top" />
             </Bar>
           </BarChart>
         </ResponsiveContainer>
