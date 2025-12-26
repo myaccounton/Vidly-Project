@@ -1,8 +1,9 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-// Use environment variable if available (for production), otherwise use config.json
-axios.defaults.baseURL = process.env.REACT_APP_API_URL ;
+// Use environment variable if available (for production), otherwise fall back to '/api'
+// This ensures requests still work if REACT_APP_API_URL is not set in the hosting environment.
+axios.defaults.baseURL = process.env.REACT_APP_API_URL || "/api";
 
 // RESPONSE INTERCEPTOR
 axios.interceptors.response.use(

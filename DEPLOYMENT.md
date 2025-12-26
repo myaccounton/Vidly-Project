@@ -70,5 +70,5 @@ If you encounter CORS errors, make sure your backend allows requests from your f
 ## Troubleshooting
 
 - **Backend won't start**: Check logs in Render dashboard, verify environment variables are set correctly
-- **Frontend can't connect to backend**: Verify `REACT_APP_API_URL` is set correctly and backend is running
+- **Frontend can't connect to backend**: Verify `REACT_APP_API_URL` is set correctly and backend is running. Make sure it includes the `/api` suffix (for example `https://vidly-backend.onrender.com/api`), since the frontend expects the API root to include `/api`.
 - **CORS errors**: Check that backend CORS is configured to allow your frontend domain

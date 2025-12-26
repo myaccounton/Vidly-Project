@@ -31,6 +31,7 @@ export function deleteMovie(movieId) {
 }
 
 export function getRecommendations(movieId) {
-  return http.get("/recommendations/" + movieId);
+  // Use `apiEndpoint` so this calls `/movies/recommendations/:id` (then baseURL is applied)
+  return http.get(apiEndpoint + "/recommendations/" + movieId);
 }
 
