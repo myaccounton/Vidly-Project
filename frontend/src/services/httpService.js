@@ -1,9 +1,8 @@
 import axios from "axios";
 import { toast } from "react-toastify";
-import { apiUrl } from "../config.json";
 
 // Use environment variable if available (for production), otherwise use config.json
-axios.defaults.baseURL = process.env.REACT_APP_API_URL || apiUrl;
+axios.defaults.baseURL = process.env.REACT_APP_API_URL ;
 
 // RESPONSE INTERCEPTOR
 axios.interceptors.response.use(

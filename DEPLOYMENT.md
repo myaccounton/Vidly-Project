@@ -72,4 +72,3 @@ If you encounter CORS errors, make sure your backend allows requests from your f
 - **Backend won't start**: Check logs in Render dashboard, verify environment variables are set correctly
 - **Frontend can't connect to backend**: Verify `REACT_APP_API_URL` is set correctly and backend is running
 - **CORS errors**: Check that backend CORS is configured to allow your frontend domain
-

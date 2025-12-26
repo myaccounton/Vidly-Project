@@ -1,7 +1,6 @@
 import http from "./httpService";
-import { apiUrl} from "../config.json";
 
-const apiEndpoint = apiUrl + "/rentals";
+const apiEndpoint =  "/rentals";
 
 /**
  * Get all rentals
@@ -27,6 +26,6 @@ export function getMyRentals() {
  * @param {Object} returnData { movieId }
  */
 export function returnRental(returnData) {
-  return http.post(apiUrl + "/returns", returnData);
+  return http.post("/returns", returnData);
 }
 
