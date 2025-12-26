@@ -31,6 +31,6 @@ export function deleteMovie(movieId) {
 }
 
 export function getRecommendations(movieId) {
-  return http.get(apiUrl + "/recommendations/" + movieId);
+  return http.get("/recommendations/" + movieId);
 }
 
