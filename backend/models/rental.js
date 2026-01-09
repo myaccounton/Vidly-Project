@@ -50,7 +50,26 @@ const rentalSchema = new mongoose.Schema({
   rentalFee: {
     type: Number,
     min: 0
+  },
+  payment: {
+    amount: {
+      type: Number,
+      min: 0
+    },
+    method: {
+      type: String,
+      enum: ["UPI", "Card", "Cash"]
+    },
+    status: {
+      type: String,
+      enum: ["Pending", "Paid"],
+      default: "Pending"
+    },
+    paidAt: {
+      type: Date
+    }
   }
+  
 });
 
 // Return logic

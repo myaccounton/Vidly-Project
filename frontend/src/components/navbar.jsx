@@ -57,14 +57,17 @@ const NavBar = ({ user }) => {
       </NavLink>
     </li>
   )}
-
- {user?.isAdmin && (
+  
+{user?.isAdmin && (
   <>
+    {/* Customers route hidden (legacy Vidly module) */}
+    {/*
     <li className="nav-item">
       <NavLink className="nav-link" to="/customers">
         Customers
       </NavLink>
     </li>
+    */}
 
     <li className="nav-item">
       <NavLink className="nav-link" to="/rentals">
@@ -73,6 +76,7 @@ const NavBar = ({ user }) => {
     </li>
   </>
 )}
+
 
 
   {/* WATCHLIST */}

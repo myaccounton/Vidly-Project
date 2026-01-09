@@ -9,7 +9,7 @@ const mongoose = require('mongoose');
 const express = require('express');
 const router = express.Router();
 
-// Helper function to get genre by ID
+
 async function getGenreById(genreId) {
   const genre = await Genre.findById(genreId);
   if (!genre) {

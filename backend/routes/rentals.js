@@ -90,6 +90,48 @@ router.post("/", auth, asyncHandler(async (req, res) => {
   }
 }));
 
+router.post("/:id/return", auth, async (req, res) => {
+  const rental = await Rental.findById(req.params.id);
+  if (!rental) return res.status(404).send("Rental not found");
+
+  if (rental.customer._id.toString() !== req.user._id && !req.user.isAdmin)
+    return res.status(403).send("Access denied");
+
+  if (rental.dateReturned)
+    return res.status(400).send("Already returned");
+
+  const allowedMethods = ["UPI", "Card", "Cash"];
+  if (!allowedMethods.includes(req.body.paymentMethod))
+    return res.status(400).send("Invalid payment method");
+
+  rental.dateReturned = new Date();
+
+  const days = Math.max(
+    1,
+    Math.ceil((rental.dateReturned - rental.dateOut) / (1000 * 60 * 60 * 24))
+  );
+
+  const amount = days * rental.movie.dailyRentalRate;
+
+  rental.payment = {
+    amount,
+    method: req.body.paymentMethod,
+    status: "Paid",
+    paidAt: new Date()
+  };
+
+  await rental.save();
+
+  await Movie.updateOne(
+    { _id: rental.movie._id },
+    { $inc: { numberInStock: 1 } }
+  );
+
+  res.send(rental);
+});
+
+
+
 router.get("/my", auth, asyncHandler(async (req, res) => {
   const rentals = await Rental.find({
     "customer._id": req.user._id
@@ -103,7 +145,6 @@ router.get('/:id', validateObjectId, asyncHandler(async (req, res) => {
   if (!rental) return notFound('Rental')(req, res);
   res.send(rental);
 }));
-
 
 
 module.exports = router;

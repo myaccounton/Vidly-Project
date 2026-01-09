@@ -4,13 +4,11 @@ import { ToastContainer } from "react-toastify";
 import Watchlist from "./components/watchlist";
 import Movies from "./components/movies";
 import MovieForm from "./components/movieForm";
-import Customers from "./components/customers";
 import Rentals from "./components/rentals";
 import NotFound from "./components/notFound";
 import NavBar from "./components/navbar";
 import LoginForm from "./components/loginForm";
 import RegisterForm from "./components/registerForm";
-import CustomerForm from "./components/customerForm";
 import RentalForm from "./components/rentalForm";
 import MyRentals from "./components/myRentals";
 import ProtectedRoute from "./components/common/protectedRoute";
@@ -58,8 +56,10 @@ function App() {
             path="/movies"
             render={props => <Movies {...props} user={user} />} 
           />
+          {/*
           <Route path="/customers/:id" component={CustomerForm} />
-          <AdminRoute path="/customers" component={Customers} />
+          <ProtectedRoute path="/customers" component={Customers} />
+          */}
           <ProtectedRoute path="/rentals/new" component={RentalForm} />
           <Route
             path="/my-rentals"
@@ -74,6 +74,7 @@ function App() {
             render={props => user ? <Watchlist {...props} /> : <Redirect to="/login" />}
           />
           <Route path="/profile" component={Profile} />
+          <Route path="/customers" component={NotFound} />
           <Redirect from="/" exact to="/movies" />
           <Redirect to="/not-found" />
         </Switch>

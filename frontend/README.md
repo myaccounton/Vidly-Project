@@ -68,3 +68,11 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+## Architecture Note
+
+This project originally followed a store-managed rental model
+(customers created by admin). It was later refactored so authenticated
+users can rent movies directly. The customers module is retained for
+compatibility with the original Vidly design but is not exposed in the UI.
+

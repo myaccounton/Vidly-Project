@@ -3,6 +3,8 @@ import Joi from "joi-browser";
 import Form from "./common/form";
 import Input from "./common/input";
 import auth from "../services/authService";
+import PasswordInput from "./common/passwordInput";
+
 
 const LoginForm = ({ history, location }) => {
   const [data, setData] = useState({
@@ -43,7 +45,16 @@ const LoginForm = ({ history, location }) => {
               onSubmit={handleSubmit}
             >
               <Input name="username" label="Email" type="email" />
-              <Input name="password" label="Password" type="password" />
+              <PasswordInput
+              name="password"
+              label="Password"
+              value={data.password}
+              onChange={({ currentTarget }) =>
+              setData({ ...data, password: currentTarget.value })
+            }
+              error={errors.password}
+            />
+
               <button className="btn btn-primary w-100 mt-3">Login</button>
             </Form>
           </div>
