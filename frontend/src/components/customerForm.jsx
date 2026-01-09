@@ -24,7 +24,6 @@ const CustomerForm = ({ history, match }) => {
 
   useEffect(() => {
   async function fetchCustomer() {
-    // ✅ GUARD BOTH CASES
     if (!customerId || customerId === "new") return;
 
     try {

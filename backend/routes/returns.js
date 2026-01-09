@@ -11,16 +11,13 @@ router.post('/', auth, asyncHandler(async (req, res) => {
   const { error } = validateReturn(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  // Look for rental - SECURITY: Only allow users to return their own rentals
-  // Only find active rentals (not already returned)
   const rental = await Rental.findOne({
-    'customer._id': req.user._id,  // Use authenticated user's ID, not from request body
+    'customer._id': req.user._id,
     'movie._id': req.body.movieId,
-    dateReturned: null  // Only find active rentals
+    dateReturned: null
   });
 
   if (!rental) {
-    // Check if rental exists but is already returned
     const existingRental = await Rental.findOne({
       'customer._id': req.user._id,
       'movie._id': req.body.movieId
@@ -43,19 +40,18 @@ router.post('/', auth, asyncHandler(async (req, res) => {
 
     return res.send(rental);
   } catch (error) {
-    // If stock increment fails, rollback the rental return
     if (rental.dateReturned) {
       rental.dateReturned = undefined;
       rental.rentalFee = undefined;
       await rental.save();
     }
-    throw error; // Re-throw to be handled by error middleware
+    throw error;
   }
 }));
 
 function validateReturn(req) {
   const schema = Joi.object({
-    movieId: Joi.objectId().required()  // Removed customerId - now using authenticated user
+    movieId: Joi.objectId().required()
   });
   return schema.validate(req);
 }

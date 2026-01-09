@@ -63,16 +63,14 @@ const Movies = ({ user }) => {
 
   const originalMovies = movies;
 
-  // Optimistic UI update
   setMovies(movies.filter(m => m._id !== movie._id));
 
   try {
-    await deleteMovie(movie._id); // 🔥 BACKEND DELETE
+    await deleteMovie(movie._id);
   } catch (ex) {
     if (ex.response && ex.response.status === 404)
       toast.error("This movie has already been deleted.");
 
-    // Rollback if delete failed
     setMovies(originalMovies);
   }
 };
@@ -136,7 +134,6 @@ const Movies = ({ user }) => {
 
   return (
   <>
-    {/* PAGE HEADER */}
     <div className="d-flex justify-content-between align-items-start mb-4">
       <div>
         <h3 className="mb-1">Movies</h3>
@@ -161,9 +158,7 @@ const Movies = ({ user }) => {
       )}
     </div>
 
-    {/* CONTENT GRID */}
     <div className="row">
-      {/* SIDEBAR */}
       <div className="col-3">
         <div className="card shadow-sm">
           <div className="card-body p-0">
@@ -176,7 +171,6 @@ const Movies = ({ user }) => {
         </div>
       </div>
 
-      {/* MAIN CONTENT */}
       <div className="col">
         <div className="card shadow-sm mb-4">
           <div className="card-body">

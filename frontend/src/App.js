@@ -25,7 +25,6 @@ function App() {
 
   useEffect(() => {
     updateUser();
-    // Listen for storage changes (login/logout in other tabs)
     window.addEventListener('storage', handleStorageChange);
     
     return () => {
@@ -56,10 +55,6 @@ function App() {
             path="/movies"
             render={props => <Movies {...props} user={user} />} 
           />
-          {/*
-          <Route path="/customers/:id" component={CustomerForm} />
-          <ProtectedRoute path="/customers" component={Customers} />
-          */}
           <ProtectedRoute path="/rentals/new" component={RentalForm} />
           <Route
             path="/my-rentals"

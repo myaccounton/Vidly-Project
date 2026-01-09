@@ -48,7 +48,6 @@ const MoviesTable = ({
     }
   ];
 
-  // ✅ SHOW WATCHLIST ONLY IF USER LOGGED IN
   if (user) {
     baseColumns.push({
       key: "watchlist",
@@ -74,7 +73,6 @@ const MoviesTable = ({
     });
   }
 
-  // Admin delete
   if (user && user.isAdmin) {
     baseColumns.push({
       key: "delete",

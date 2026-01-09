@@ -16,7 +16,6 @@ const PasswordInput = ({ name, label, value, onChange, error }) => {
         className={"form-control" + (error ? " is-invalid" : "")}
       />
 
-      {/* Font Awesome icon */}
       <span
         onClick={() => setShow(!show)}
         style={{

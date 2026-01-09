@@ -1,8 +1,3 @@
-/**
- * Legacy module retained from original Vidly architecture.
- * Current implementation uses user-based rentals.
- */
-
 const {Customer,validate} = require('../models/customer');
 const express = require('express');
 const router = express.Router();

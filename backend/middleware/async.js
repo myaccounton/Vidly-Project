@@ -1,5 +1,3 @@
-// Async error handler wrapper
-// Wraps async route handlers to automatically catch errors
 module.exports = function asyncHandler(handler) {
   return async (req, res, next) => {
     try {

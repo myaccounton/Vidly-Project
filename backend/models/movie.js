@@ -1,4 +1,3 @@
-// models/movie.js
 const Joi = require('joi');
 const mongoose = require('mongoose');
 const { genreSchema } = require('./genre');
@@ -29,10 +28,8 @@ const movieSchema = new mongoose.Schema({
   },
 });
 
-// Use uppercase 'Movie' for the model name (convention)
 const Movie = mongoose.model('Movie', movieSchema);
 
-// Validation function
 function validateMovie(movie) {
   const schema = Joi.object({
     title: Joi.string().min(1).max(50).required(),

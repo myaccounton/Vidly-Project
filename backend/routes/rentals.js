@@ -29,22 +29,17 @@ router.post("/", auth, asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
   if (!user) return res.status(400).send("User not found.");
 
-  // Check rental limit for non-admin users
   if (!user.isAdmin) {
-    // Get customer to check gold status
     const customer = await Customer.findOne({ userId: user._id });
     const isGold = customer ? customer.isGold : false;
     
-    // Count active rentals (not returned)
     const activeRentalsCount = await Rental.countDocuments({
       "customer._id": user._id,
       dateReturned: null
     });
 
-    // Determine rental limit based on membership
     const rentalLimit = isGold ? constants.MAX_RENTALS_GOLD : constants.MAX_RENTALS_REGULAR;
 
-    // Check if user has reached their rental limit
     if (activeRentalsCount >= rentalLimit) {
       return res.status(400).send(
         `You have reached your rental limit of ${rentalLimit} movie(s). Please return a movie before renting another one.`
@@ -52,8 +47,6 @@ router.post("/", auth, asyncHandler(async (req, res) => {
     }
   }
 
-  // Use atomic operation to prevent race condition
-  // Only decrement if stock > 0
   const updatedMovie = await Movie.findOneAndUpdate(
     { _id: req.body.movieId, numberInStock: { $gt: 0 } },
     { $inc: { numberInStock: -1 } },
@@ -81,16 +74,15 @@ router.post("/", auth, asyncHandler(async (req, res) => {
     await rental.save();
     res.send(rental);
   } catch (error) {
-    // Rollback stock increment if rental save fails
     await Movie.updateOne(
       { _id: req.body.movieId },
       { $inc: { numberInStock: 1 } }
     );
-    throw error; // Re-throw to be handled by error middleware
+    throw error;
   }
 }));
 
-router.post("/:id/return", auth, async (req, res) => {
+router.post("/:id/return", auth, asyncHandler(async (req, res) => {
   const rental = await Rental.findById(req.params.id);
   if (!rental) return res.status(404).send("Rental not found");
 
@@ -128,7 +120,7 @@ router.post("/:id/return", auth, async (req, res) => {
   );
 
   res.send(rental);
-});
+}));
 
 
 

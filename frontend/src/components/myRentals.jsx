@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getMyRentals, returnRental } from "../services/rentalService";
 import auth from "../services/authService";
 import { toast } from "react-toastify";
+import PaymentModal from "./paymentModal";
 
 const MyRentals = () => {
   const user = auth.getCurrentUser();
@@ -29,7 +30,14 @@ const MyRentals = () => {
     else setLoading(false);
   }, [user]);
 
-  /* ---------------- RETURN FLOW ---------------- */
+  const calculateAmount = (rental) => {
+    if (!rental) return 0;
+    const days = Math.max(
+      1,
+      Math.ceil((new Date() - new Date(rental.dateOut)) / (1000 * 60 * 60 * 24))
+    );
+    return days * rental.movie.dailyRentalRate;
+  };
 
   const handleReturnClick = (rental) => {
     if (rental.dateReturned) {
@@ -60,8 +68,6 @@ const MyRentals = () => {
     }
   };
 
-  /* ---------------- UI STATES ---------------- */
-
   if (loading)
     return (
       <div className="text-center py-5">
@@ -84,13 +90,10 @@ const MyRentals = () => {
   const activeRentals = rentals.filter(r => !r.dateReturned);
   const returnedRentals = rentals.filter(r => r.dateReturned);
 
-  /* ---------------- RENDER ---------------- */
-
   return (
     <div className="mt-4">
       <h3 className="mb-4">My Rentals</h3>
 
-      {/* ACTIVE RENTALS */}
       {activeRentals.length > 0 && (
         <>
           <h5 className="mb-3">Active Rentals</h5>
@@ -133,7 +136,6 @@ const MyRentals = () => {
         </>
       )}
 
-      {/* RETURNED RENTALS */}
       {returnedRentals.length > 0 && (
         <>
           <h5 className="mb-3">Returned Rentals</h5>
@@ -155,7 +157,7 @@ const MyRentals = () => {
                       <td>{rental.movie.title}</td>
                       <td>{new Date(rental.dateOut).toLocaleDateString()}</td>
                       <td>{new Date(rental.dateReturned).toLocaleDateString()}</td>
-                      <td>Rs {rental.payment?.amount}</td>
+                      <td>Rs {rental.payment?.amount?.toFixed(2) || "0.00"}</td>
                       <td>
                         <span className="badge bg-secondary">Paid</span>
                       </td>
@@ -168,51 +170,16 @@ const MyRentals = () => {
         </>
       )}
 
-      {/* MOCK PAYMENT MODAL */}
       {showPayment && selectedRental && (
-        <div className="modal-backdrop show">
-          <div className="modal d-block">
-            <div className="modal-dialog">
-              <div className="modal-content p-4">
-                <h5 className="mb-3">Mock Payment</h5>
-
-                <p><strong>{selectedRental.movie.title}</strong></p>
-                <p>Rate: Rs {selectedRental.movie.dailyRentalRate}/day</p>
-
-                <button
-                  className="btn btn-success w-100 mb-2"
-                  onClick={() => handlePayment("UPI")}
-                  disabled={returning}
-                >
-                  Pay with UPI
-                </button>
-
-                <button
-                  className="btn btn-primary w-100 mb-2"
-                  onClick={() => handlePayment("Card")}
-                  disabled={returning}
-                >
-                  Pay with Card
-                </button>
-
-                <button
-                  className="btn btn-secondary w-100"
-                  onClick={() => handlePayment("Cash")}
-                  disabled={returning}
-                >
-                  Cash
-                </button>
-
-                <button
-                  className="btn btn-link w-100 mt-2"
-                  onClick={() => setShowPayment(false)}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <PaymentModal
+          amount={calculateAmount(selectedRental)}
+          onPay={handlePayment}
+          onClose={() => {
+            setShowPayment(false);
+            setSelectedRental(null);
+          }}
+          disabled={returning}
+        />
       )}
     </div>
   );

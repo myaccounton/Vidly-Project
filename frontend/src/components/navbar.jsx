@@ -12,10 +12,7 @@ const NavBar = ({ user }) => {
       setWatchlistCount(getWatchlist().length);
     };
 
-    // Works across tabs
     window.addEventListener("storage", updateCount);
-
-    // Works in same tab (custom event)
     window.addEventListener("watchlistUpdated", updateCount);
 
     return () => {
@@ -31,7 +28,6 @@ const NavBar = ({ user }) => {
           Vidly
         </NavLink>
 
-        {/* Mobile toggle */}
         <button
           className="navbar-toggler"
           type="button"
@@ -49,7 +45,6 @@ const NavBar = ({ user }) => {
     </NavLink>
   </li>
 
-  {/* USER ONLY */}
   {user && !user.isAdmin && (
     <li className="nav-item">
       <NavLink className="nav-link" to="/my-rentals">
@@ -60,15 +55,6 @@ const NavBar = ({ user }) => {
   
 {user?.isAdmin && (
   <>
-    {/* Customers route hidden (legacy Vidly module) */}
-    {/*
-    <li className="nav-item">
-      <NavLink className="nav-link" to="/customers">
-        Customers
-      </NavLink>
-    </li>
-    */}
-
     <li className="nav-item">
       <NavLink className="nav-link" to="/rentals">
         Rentals
@@ -77,9 +63,6 @@ const NavBar = ({ user }) => {
   </>
 )}
 
-
-
-  {/* WATCHLIST */}
   {user && (
     <li className="nav-item">
       <NavLink className="nav-link" to="/watchlist">

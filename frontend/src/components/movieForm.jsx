@@ -77,7 +77,6 @@ const MovieForm = ({ match, history }) => {
     await saveMovie(movie);
     history.push("/movies");
   } catch (ex) {
-    // Error handling is done by httpService interceptor
   }
 };
 

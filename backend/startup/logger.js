@@ -4,7 +4,6 @@ require('winston-mongodb');
 const loggerTransports = [];
 
 if (process.env.NODE_ENV === 'production') {
-  // Production: log to console, file, and MongoDB
   loggerTransports.push(
     new transports.Console({ level: 'info' }),
     new transports.File({ filename: 'logs/errors.log', level: 'error' }),
@@ -14,10 +13,8 @@ if (process.env.NODE_ENV === 'production') {
     })
   );
 } else if (process.env.NODE_ENV === 'test') {
-  // Test: silent to avoid Jest warnings
   loggerTransports.push(new transports.Console({ silent: true }));
 } else {
-  // Development: log to console and file
   loggerTransports.push(
     new transports.Console({ level: 'debug' }),
     new transports.File({ filename: 'logs/dev.log', level: 'debug' })
@@ -44,7 +41,6 @@ const logger = createLogger({
   ]
 });
 
-// Optional: catch unhandled rejections globally
 process.on('unhandledRejection', (ex) => {
   throw ex;
 });

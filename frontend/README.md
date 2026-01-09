@@ -1,78 +1,160 @@
-# Getting Started with Create React App
+# Vidly Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+React-based frontend application for the Vidly movie rental management system.
 
-## Available Scripts
+## 🚀 Quick Start
 
-In the project directory, you can run:
+### Prerequisites
+- Node.js (v14 or higher)
+- npm or yarn
 
-### `npm start`
+### Installation
+```bash
+npm install
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Environment Setup
+Create a `.env` file in the `frontend` directory:
+```env
+REACT_APP_API_URL=http://localhost:3001/api
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Development
+```bash
+npm start
+```
+Runs the app in development mode at [http://localhost:3000](http://localhost:3000)
 
-### `npm test`
+### Build for Production
+```bash
+npm run build
+```
+Creates an optimized production build in the `build` folder.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Testing
+```bash
+npm test
+```
+Launches the test runner in interactive watch mode.
 
-### `npm run build`
+## 📁 Project Structure
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```
+src/
+├── components/          # React components
+│   ├── common/         # Reusable UI components
+│   │   ├── form.jsx
+│   │   ├── input.jsx
+│   │   ├── passwordInput.jsx
+│   │   ├── protectedRoute.jsx
+│   │   └── ...
+│   ├── movies.jsx      # Movie listing and search
+│   ├── movieForm.jsx   # Movie creation/editing (Admin)
+│   ├── myRentals.jsx   # User rental management
+│   ├── paymentModal.jsx # Payment processing modal
+│   ├── watchlist.jsx   # User watchlist
+│   └── ...
+├── services/           # API service layer
+│   ├── authService.js
+│   ├── movieService.js
+│   ├── rentalService.js
+│   └── ...
+├── utils/             # Utility functions
+└── App.js             # Main application component
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🎨 Key Features
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Components
+- **Movies**: Browse and search movies with pagination
+- **My Rentals**: View active and returned rentals with payment history
+- **Payment Modal**: Secure payment interface with multiple payment methods
+- **Watchlist**: Personal movie watchlist with localStorage persistence
+- **Profile**: User account management
+- **Protected Routes**: Authentication and authorization guards
 
-### `npm run eject`
+### State Management
+- React Hooks (useState, useEffect) for component state
+- Context API for global state (if needed)
+- localStorage for persistent data (watchlist, auth tokens)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Routing
+- React Router v5 for client-side routing
+- Protected routes for authenticated users
+- Admin-only routes for administrative functions
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### UI/UX
+- Bootstrap 4 for responsive design
+- React Toastify for user notifications
+- Font Awesome icons
+- Custom modal components
+- Error boundaries for error handling
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## 🔧 Available Scripts
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- `npm start` - Start development server
+- `npm build` - Create production build
+- `npm test` - Run tests
+- `npm eject` - Eject from Create React App (irreversible)
 
-## Learn More
+## 📦 Dependencies
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- **react** - UI library
+- **react-router-dom** - Routing
+- **axios** - HTTP client
+- **bootstrap** - CSS framework
+- **react-toastify** - Notifications
+- **joi-browser** - Form validation
+- **jwt-decode** - JWT token decoding
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 🏗️ Architecture Notes
 
-### Code Splitting
+This project was bootstrapped with Create React App. The application follows a component-based architecture with:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- **Service Layer**: Abstracts API calls from components
+- **Reusable Components**: Common UI elements in `components/common/`
+- **Route Protection**: Custom route components for authentication
+- **Error Handling**: Error boundaries and try-catch blocks
+- **Form Validation**: Client-side validation with Joi
 
-### Analyzing the Bundle Size
+## 🔐 Authentication
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+The app uses JWT tokens stored in localStorage:
+- Tokens are automatically included in API requests
+- Protected routes check for valid authentication
+- Admin routes verify admin privileges
+- Automatic logout on token expiration
 
-### Making a Progressive Web App
+## 📱 Responsive Design
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+The application is fully responsive and works on:
+- Desktop browsers
+- Tablets
+- Mobile devices
 
-### Advanced Configuration
+Bootstrap's responsive utilities ensure optimal viewing across all screen sizes.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## 🐛 Troubleshooting
 
-### Deployment
+### API Connection Issues
+- Verify `REACT_APP_API_URL` in `.env` file
+- Ensure backend server is running
+- Check CORS configuration on backend
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### Build Errors
+- Clear `node_modules` and reinstall: `rm -rf node_modules && npm install`
+- Clear build cache: `npm run build -- --no-cache`
 
-### `npm run build` fails to minify
+### Port Already in Use
+- Change port by setting `PORT=3001` in `.env` or command line
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 📚 Learn More
 
-## Architecture Note
+- [React Documentation](https://reactjs.org/)
+- [React Router Documentation](https://reactrouter.com/)
+- [Bootstrap Documentation](https://getbootstrap.com/)
+- [Create React App Documentation](https://create-react-app.dev/)
 
-This project originally followed a store-managed rental model
-(customers created by admin). It was later refactored so authenticated
-users can rent movies directly. The customers module is retained for
-compatibility with the original Vidly design but is not exposed in the UI.
+---
 
+For the complete project documentation, see the main [README.md](../README.md) file.

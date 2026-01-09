@@ -29,7 +29,7 @@ const rentalSchema = new mongoose.Schema({
       title: {
         type: String,
         required: true,
-        minlength: 1   // ✅ FIXED
+        minlength: 1
       },
       dailyRentalRate: {
         type: Number,
@@ -72,11 +72,9 @@ const rentalSchema = new mongoose.Schema({
   
 });
 
-// Return logic
 rentalSchema.methods.return = function () {
   this.dateReturned = new Date();
   const rentalDays = moment().diff(this.dateOut, "days");
-  // Ensure minimum 1 day rental fee (even if returned same day)
   const daysToCharge = Math.max(1, rentalDays);
   this.rentalFee = daysToCharge * this.movie.dailyRentalRate;
 };
