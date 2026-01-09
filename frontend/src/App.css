@@ -53,9 +53,6 @@
 }
 
 
-body {
-  background-color: #f8f9fa;
-}
 
 .table {
   background: white;
@@ -67,8 +64,24 @@ body {
   font-size: 1.3rem;
 }
 
+.navbar {
+  background: rgba(33, 37, 41, 0.95) !important;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.12);
+  position: relative;
+  z-index: 1000;
+}
+
 main.container {
   max-width: 1200px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(8px);
+  margin-top: 1rem;
+  position: relative;
+  z-index: 1;
 }
 
 .table {
@@ -93,6 +106,9 @@ main.container {
 .card {
   border: none;
   border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 }
 
 .card-shadow-sm {

@@ -3,6 +3,7 @@ import MoviesTable from "./moviesTable";
 import ListGroup from "./common/listGroup";
 import Pagination from "./common/pagination";
 import RatingsChart from "./ratingsChart";
+import SearchBox from "./common/searchBox";
 import { Link } from "react-router-dom";
 import { getMovies, deleteMovie } from "../services/movieService";
 import { toast } from "react-toastify";
@@ -15,6 +16,7 @@ const Movies = ({ user }) => {
   const [movies, setMovies] = useState([]);
   const [genres, setGenres] = useState([]);
   const [selectedGenre, setSelectedGenre] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [sortColumn, setSortColumn] = useState({
@@ -88,6 +90,11 @@ const Movies = ({ user }) => {
     setCurrentPage(1);
   };
 
+  const handleSearchChange = query => {
+    setSearchQuery(query);
+    setCurrentPage(1);
+  };
+
   const handlePageChange = page => {
     setCurrentPage(page);
   };
@@ -97,10 +104,19 @@ const Movies = ({ user }) => {
   };
 
   const getPagedData = () => {
-    const filtered =
-      selectedGenre && selectedGenre._id
-        ? movies.filter(m => m.genre._id === selectedGenre._id)
-        : movies;
+    let filtered = movies;
+
+    if (selectedGenre && selectedGenre._id) {
+      filtered = filtered.filter(m => m.genre._id === selectedGenre._id);
+    }
+
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(m =>
+        m.title.toLowerCase().includes(query) ||
+        m.genre.name.toLowerCase().includes(query)
+      );
+    }
 
     const sorted = _.orderBy(
       filtered,
@@ -160,8 +176,12 @@ const Movies = ({ user }) => {
 
     <div className="row">
       <div className="col-3">
-        <div className="card shadow-sm">
-          <div className="card-body p-0">
+        <div className="card shadow-sm mb-4">
+          <div className="card-body">
+            <h6 className="mb-3">
+              <i className="fas fa-filter me-2"></i>
+              Filters
+            </h6>
             <ListGroup
               items={genres}
               selectedItem={selectedGenre}
@@ -174,6 +194,38 @@ const Movies = ({ user }) => {
       <div className="col">
         <div className="card shadow-sm mb-4">
           <div className="card-body">
+            <div className="mb-3">
+              <div className="input-group">
+                <span className="input-group-text bg-white" style={{ height: '38px' }}>
+                  <i className="fas fa-search text-muted"></i>
+                </span>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Search movies by title or genre..."
+                  value={searchQuery}
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  style={{ height: '38px' }}
+                />
+                {searchQuery && (
+                  <button
+                    className="btn btn-outline-secondary"
+                    type="button"
+                    onClick={() => handleSearchChange("")}
+                    title="Clear search"
+                    style={{ height: '38px' }}
+                  >
+                    <i className="fas fa-times"></i>
+                  </button>
+                )}
+              </div>
+              {searchQuery && (
+                <small className="text-muted mt-2 d-block" style={{ color: '#6c757d', fontSize: '0.9rem' }}>
+                  <i className="fas fa-info-circle me-1"></i>
+                  Found {totalCount} movie{totalCount !== 1 ? 's' : ''} matching "{searchQuery}"
+                </small>
+              )}
+            </div>
             <MoviesTable
               movies={pagedMovies}
               sortColumn={sortColumn}
