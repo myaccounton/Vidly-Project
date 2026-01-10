@@ -28,7 +28,7 @@ const MyRentals = () => {
 
     if (user) loadRentals();
     else setLoading(false);
-  }, [user]);
+  }, []);
 
   const calculateAmount = (rental) => {
     if (!rental) return 0;
