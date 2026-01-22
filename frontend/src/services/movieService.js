@@ -13,9 +13,9 @@ export function getMovie(movieId) {
 export function saveMovie(movie) {
   const body = {
     title: movie.title,
-    genreId: movie.genreId,               // 🔥 FIX HERE
+    genreId: movie.genreId,
     numberInStock: Number(movie.numberInStock),
-    dailyRentalRate: Number(movie.dailyRentalRate)
+    dailyRentalRate: Number(movie.dailyRentalRate),
   };
 
   if (movie._id) {
@@ -33,4 +33,3 @@ export function deleteMovie(movieId) {
 export function getRecommendations(movieId) {
   return http.get(apiEndpoint + "/recommendations/" + movieId);
 }
-

@@ -58,7 +58,7 @@ router.post('/', auth, asyncHandler(async (req, res) => {
       name: genre.name
     },
     numberInStock: req.body.numberInStock,
-    dailyRentalRate: req.body.dailyRentalRate
+    dailyRentalRate: req.body.dailyRentalRate,
   });
 
   await movie.save();
@@ -80,7 +80,7 @@ router.put('/:id', [auth, validateObjectId], asyncHandler(async (req, res) => {
         name: genre.name
       },
       numberInStock: req.body.numberInStock,
-      dailyRentalRate: req.body.dailyRentalRate
+      dailyRentalRate: req.body.dailyRentalRate,
     },
     { new: true }
   );

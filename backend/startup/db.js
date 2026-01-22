@@ -3,9 +3,7 @@ const mongoose = require('mongoose');
 const config = require('config');
 
 module.exports = function () {
-  const db = process.env.MONGODB_URI || process.env.DB || config.get('db');
-
-  if (process.env.NODE_ENV === 'test') return;
+  const db = config.get('db');
 
   mongoose.connect(db)
     .then(() => logger.info(`Connected to ${db}...`))

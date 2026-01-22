@@ -17,7 +17,7 @@ const MovieForm = ({ match, history }) => {
     title: "",
     genreId: "",
     numberInStock: "",
-    dailyRentalRate: ""
+    dailyRentalRate: "",
   });
 
   const [genres, setGenres] = useState([]);
@@ -29,7 +29,7 @@ const MovieForm = ({ match, history }) => {
     title: Joi.string().required().label("Title"),
     genreId: Joi.string().required().label("Genre"),
     numberInStock: Joi.number().min(0).max(100).required().label("Stock"),
-    dailyRentalRate: Joi.number().min(0).max(10).required().label("Rate")
+    dailyRentalRate: Joi.number().min(0).max(10).required().label("Rate"),
   };
 
   useEffect(() => {
@@ -61,7 +61,7 @@ const MovieForm = ({ match, history }) => {
     title: movie.title,
     genreId: movie.genre._id,
     numberInStock: movie.numberInStock,
-    dailyRentalRate: movie.dailyRentalRate
+    dailyRentalRate: movie.dailyRentalRate,
   });
 
   const handleSubmit = async () => {
@@ -71,7 +71,7 @@ const MovieForm = ({ match, history }) => {
       title: data.title,
       genreId: data.genreId,
       numberInStock: Number(data.numberInStock),
-      dailyRentalRate: Number(data.dailyRentalRate)
+      dailyRentalRate: Number(data.dailyRentalRate),
     };
 
     await saveMovie(movie);
@@ -80,13 +80,11 @@ const MovieForm = ({ match, history }) => {
   }
 };
 
-
   if (loading) return <p>Loading...</p>;
 
   return (
     <div className="col-md-6">
       <h2 className="mb-3">{isAdmin ? "Edit Movie" : "Movie Details"}</h2>
-
       {user && !isAdmin && (
         <Link
           to={`/rentals/new?movieId=${data._id}`}
@@ -106,6 +104,7 @@ const MovieForm = ({ match, history }) => {
           onSubmit={handleSubmit}
         >
           <Input name="title" label="Title" />
+
           <Select
             name="genreId"
             label="Genre"
