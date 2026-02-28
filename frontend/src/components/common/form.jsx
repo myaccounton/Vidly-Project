@@ -1,5 +1,5 @@
 import React from "react";
-import Joi from "joi-browser";
+import Joi from "joi";
 
 const Form = ({
   data,
@@ -10,36 +10,38 @@ const Form = ({
   onSubmit,
   children
 }) => {
-
   const validate = () => {
-    const options = { abortEarly: false, allowUnknown: true };
-    const { error } = Joi.validate(data, schema, options);
+    const joiSchema = Joi.object(schema);
+    const { error } = joiSchema.validate(data, { abortEarly: false });
+
     if (!error) return null;
 
     const errors = {};
-    for (let item of error.details)
+    for (let item of error.details) {
       errors[item.path[0]] = item.message;
-
+    }
     return errors;
   };
 
   const validateProperty = ({ name, value }) => {
+    if (!schema[name]) return null; 
+
     const obj = { [name]: value };
-    const fieldSchema = { [name]: schema[name] };
-    const { error } = Joi.validate(obj, fieldSchema);
+    const fieldSchema = Joi.object({ [name]: schema[name] });
+
+    const { error } = fieldSchema.validate(obj);
     return error ? error.details[0].message : null;
   };
 
   const handleSubmit = e => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const errors = validate();
-  setErrors(errors || {});
-  if (errors) return;
+    const errors = validate();
+    setErrors(errors || {});
+    if (errors) return;
 
-  onSubmit();
-};
-
+    onSubmit();
+  };
 
   const handleChange = ({ currentTarget: input }) => {
     const newErrors = { ...errors };
@@ -53,25 +55,16 @@ const Form = ({
   };
 
   const enhancedChildren = React.Children.map(children, child => {
-    if (!child) return null;
+    if (!child || !child.props?.name) return child;
 
-    if (child.props && child.props.name)
- {
-      return React.cloneElement(child, {
-        value: data[child.props.name],
-        onChange: handleChange,
-        error: errors[child.props.name]
-      });
-    }
-
-    return child;
+    return React.cloneElement(child, {
+      value: data[child.props.name],
+      onChange: handleChange,
+      error: errors[child.props.name]
+    });
   });
 
-  return (
-    <form onSubmit={handleSubmit}>
-      {enhancedChildren}
-    </form>
-  );
+  return <form onSubmit={handleSubmit}>{enhancedChildren}</form>;
 };
 
 export default Form;

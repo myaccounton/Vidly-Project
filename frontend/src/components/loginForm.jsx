@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Joi from "joi-browser";
+import Joi from "joi";
 import Form from "./common/form";
 import Input from "./common/input";
 import auth from "../services/authService";
@@ -46,14 +46,14 @@ const LoginForm = ({ history, location }) => {
             >
               <Input name="username" label="Email" type="email" />
               <PasswordInput
-              name="password"
-              label="Password"
-              value={data.password}
-              onChange={({ currentTarget }) =>
-              setData({ ...data, password: currentTarget.value })
-            }
-              error={errors.password}
-            />
+                name="password"
+                label="Password"
+                value={data.password}
+                onChange={({ currentTarget }) =>
+                  setData({ ...data, password: currentTarget.value })
+                }
+                error={errors.password}
+              />
 
               <button className="btn btn-primary w-100 mt-3">Login</button>
             </Form>

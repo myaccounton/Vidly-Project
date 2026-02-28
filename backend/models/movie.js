@@ -26,6 +26,10 @@ const movieSchema = new mongoose.Schema({
     min: 0,
     max: 255,
   },
+  posterUrl:{
+    type: String,
+    required: true
+  }
 });
 
 const Movie = mongoose.model('Movie', movieSchema);
@@ -36,6 +40,8 @@ function validateMovie(movie) {
     genreId: Joi.objectId().required(),
     numberInStock: Joi.number().min(0).required(),
     dailyRentalRate: Joi.number().min(0).required(),
+    // posterUrl is not in req.body - it comes from req.file.path
+    // So we don't validate it here
   });
 
   return schema.validate(movie);

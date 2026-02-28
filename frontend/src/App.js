@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Route, Redirect, Switch } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Watchlist from "./components/watchlist";
@@ -16,30 +16,12 @@ import AdminRoute from "./components/common/adminRoute";
 import ErrorBoundary from "./components/common/errorBoundary";
 import Logout from "./components/logout";
 import Profile from "./components/profile";
-import auth from "./services/authService";
+import useAuth from "./hooks/useAuth";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 
 function App() {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    updateUser();
-    window.addEventListener('storage', handleStorageChange);
-    
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);
-
-  const updateUser = () => {
-    const currentUser = auth.getCurrentUser();
-    setUser(currentUser);
-  };
-
-  const handleStorageChange = () => {
-    updateUser();
-  };
+  const { user } = useAuth();
 
   return (
     <ErrorBoundary>

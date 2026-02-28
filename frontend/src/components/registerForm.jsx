@@ -1,23 +1,33 @@
 import React, { useState } from "react";
-import Joi from "joi-browser";
+import Joi from "joi";
 import Form from "./common/form";
 import Input from "./common/input";
-import auth from "../services/authService";
 import PasswordInput from "./common/passwordInput";
-
+import auth from "../services/authService";
 
 const RegisterForm = ({ history }) => {
   const [data, setData] = useState({
-    username: "",
+    email: "",
     password: "",
     name: ""
   });
+
   const [errors, setErrors] = useState({});
 
   const schema = {
-    username: Joi.string().email().required().label("Username"),
-    password: Joi.string().min(5).required().label("Password"),
-    name: Joi.string().required().label("Name")
+    email: Joi.string()
+      .email({ tlds: { allow: false } })   
+      .required()
+      .label("Email"),
+
+    password: Joi.string()
+      .min(5)
+      .required()
+      .label("Password"),
+
+    name: Joi.string()
+      .required()
+      .label("Name")
   };
 
   const handleSubmit = async () => {
@@ -26,8 +36,9 @@ const RegisterForm = ({ history }) => {
       auth.loginWithJwt(response.headers["x-auth-token"]);
       history.push("/");
     } catch (ex) {
-      if (ex.response && ex.response.status === 400)
-        setErrors({ username: ex.response.data });
+      if (ex.response && ex.response.status === 400) {
+        setErrors({ email: ex.response.data });
+      }
     }
   };
 
@@ -37,6 +48,7 @@ const RegisterForm = ({ history }) => {
         <div className="card shadow-sm">
           <div className="card-body p-4">
             <h2 className="card-title mb-4">Create Account</h2>
+
             <Form
               data={data}
               setData={setData}
@@ -46,19 +58,23 @@ const RegisterForm = ({ history }) => {
               onSubmit={handleSubmit}
             >
               <Input name="name" label="Full Name" />
-              <Input name="username" label="Email" type="email" />
-              <PasswordInput
-              name="password"
-              label="Password"
-              value={data.password}
-              onChange={({ currentTarget }) =>
-              setData({ ...data, password: currentTarget.value })
-            }
-            error={errors.password}
-            />
 
-              <button className="btn btn-primary w-100 mt-3">Register</button>
+              <Input
+                name="email"
+                label="Email"
+                type="email"
+              />
+
+              <PasswordInput
+                name="password"
+                label="Password"
+              />
+
+              <button className="btn btn-primary w-100 mt-3">
+                Register
+              </button>
             </Form>
+
           </div>
         </div>
       </div>

@@ -27,6 +27,42 @@ const MoviesTable = ({
  const columns = useMemo(() => {
   const baseColumns = [
     {
+      key: "poster",
+      label: "Poster",
+      content: movie => (
+        <Link to={`/movies/${movie._id}`}>
+          {movie.posterUrl ? (
+            <img
+              src={movie.posterUrl}
+              alt={movie.title}
+              style={{
+                width: '60px',
+                height: '80px',
+                objectFit: 'cover',
+                borderRadius: '4px'
+              }}
+            />
+          ) : (
+            <div
+              style={{
+                width: '60px',
+                height: '80px',
+                backgroundColor: '#f0f0f0',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: '4px',
+                fontSize: '12px',
+                color: '#999'
+              }}
+            >
+              No Image
+            </div>
+          )}
+        </Link>
+      )
+    },
+    {
       path: "title",
       label: "Title",
       content: movie => (

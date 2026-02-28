@@ -1,18 +1,12 @@
-import React, { useEffect, useState } from "react";
-import Joi from "joi-browser";
-import Form from "./common/form";
-import Input from "./common/input";
+import React, { useEffect, useCallback } from "react";
+import Joi from "joi";
+import useForm from "../hooks/useForm";
+import useFetch from "../hooks/useFetch";
 import { getCustomer, saveCustomer } from "../services/customerService";
+import Input from "./common/input";
+import FormSkeleton from "./common/formSkeleton";
 
 const CustomerForm = ({ history, match }) => {
-  const [data, setData] = useState({
-    name: "",
-    phone: "",
-    isGold: false,
-  });
-
-  const [errors, setErrors] = useState({});
-
   const schema = {
     _id: Joi.string(),
     name: Joi.string().required().label("Name"),
@@ -20,54 +14,73 @@ const CustomerForm = ({ history, match }) => {
     isGold: Joi.boolean(),
   };
 
+  const validateForm = (data) => {
+    const options = { abortEarly: false };
+    const { error } = Joi.object(schema).validate(data, options);
+    if (!error) return {};
+
+    const errors = {};
+    for (let item of error.details) {
+      errors[item.path[0]] = item.message;
+    }
+    return errors;
+  };
+
+  const { data, renderInput, renderButton, handleSubmit, setData } = useForm(
+    {
+      name: "",
+      phone: "",
+      isGold: false,
+    },
+    validateForm
+  );
+
   const customerId = match.params.id;
 
-  useEffect(() => {
-  async function fetchCustomer() {
-    if (!customerId || customerId === "new") return;
+  const { data: customerData, loading } = useFetch(
+    async () => {
+      if (!customerId || customerId === "new") return null;
+      const { data } = await getCustomer(customerId);
+      return data;
+    },
+    [customerId]
+  );
 
-    try {
-      const { data: customer } = await getCustomer(customerId);
-      setData(mapToViewModel(customer));
-    } catch (ex) {
-      if (ex.response && ex.response.status === 404)
-        history.replace("/not-found");
-    }
-  }
-
-  fetchCustomer();
-}, [customerId, history]);
-
-
-
-  const mapToViewModel = customer => ({
+  const mapToViewModel = useCallback((customer) => ({
     _id: customer._id,
     name: customer.name,
     phone: customer.phone,
     isGold: customer.isGold,
-  });
+  }), []);
 
-  const handleSubmit = async () => {
+  useEffect(() => {
+    if (customerData) {
+      setData(mapToViewModel(customerData));
+    }
+  }, [customerData, setData, mapToViewModel]);
+
+  useEffect(() => {
+    if (customerData === null && customerId !== "new" && !loading) {
+      history.replace("/not-found");
+    }
+  }, [customerData, customerId, loading, history]);
+
+  const doSubmit = async () => {
     await saveCustomer(data);
     history.push("/customers");
   };
+
+  if (loading) return <FormSkeleton />;
 
   return (
     <div className="col-md-6">
       <h1>Customer Form</h1>
 
-      <Form
-        data={data}
-        setData={setData}
-        errors={errors}
-        setErrors={setErrors}
-        schema={schema}
-        onSubmit={handleSubmit}
-      >
-        <Input name="name" label="Name" />
-        <Input name="phone" label="Phone" />
-        <button className="btn btn-primary">Save</button>
-      </Form>
+      <form onSubmit={handleSubmit(doSubmit)}>
+        {renderInput("name", "Name")}
+        {renderInput("phone", "Phone")}
+        {renderButton("Save")}
+      </form>
     </div>
   );
 };

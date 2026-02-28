@@ -4,6 +4,19 @@ import { toast } from "react-toastify";
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL || "/api";
 
+// Set content type for FormData requests
+axios.interceptors.request.use(
+  (config) => {
+    if (config.data instanceof FormData) {
+      config.headers['Content-Type'] = 'multipart/form-data';
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 axios.interceptors.response.use(
   response => response,
   error => {

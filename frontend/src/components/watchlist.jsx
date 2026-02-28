@@ -1,21 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { getWatchlist, removeFromWatchlist } from "../services/watchlistService";
+import React from "react";
+import useWatchlist from "../hooks/useWatchlist";
 import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
 
 const Watchlist = () => {
-  const [movies, setMovies] = useState([]);
-
-  useEffect(() => {
-    setMovies(getWatchlist());
-  }, []);
-
-  const handleRemove = movieId => {
-  removeFromWatchlist(movieId);
-  setMovies(getWatchlist());
-  toast.info("Removed from Watchlist");
-  window.dispatchEvent(new Event("storage"));
-};
+  const { movies, removeMovie } = useWatchlist();
 
 
   if (movies.length === 0)
@@ -55,7 +43,7 @@ const Watchlist = () => {
               <td>Rs {movie.dailyRentalRate}/day</td>
               <td>
                 <button
-                  onClick={() => handleRemove(movie._id)}
+                  onClick={() => removeMovie(movie._id)}
                   className="btn btn-sm btn-outline-danger"
                 >
                   Remove

@@ -1,36 +1,25 @@
-import React, { useEffect, useState } from "react";
-import auth from "../services/authService";
-import { getWatchlist } from "../services/watchlistService";
+import React from "react";
+import useAuth from "../hooks/useAuth";
+import useWatchlist from "../hooks/useWatchlist";
+import useFetch from "../hooks/useFetch";
 import { getCustomers } from "../services/customerService";
 
 const Profile = () => {
-  const user = auth.getCurrentUser();
-  const watchlistCount = getWatchlist().length;
+  const { user } = useAuth();
+  const { count: watchlistCount } = useWatchlist();
 
-  const [isGold, setIsGold] = useState(false);
+  const { data: customers = [] } = useFetch(
+    async () => {
+      const { data } = await getCustomers();
+      return data;
+    },
+    []
+  );
 
-  useEffect(() => {
-    async function fetchGoldStatus() {
-       if (user?.isAdmin) {
-        setIsGold(false);
-        return;
-       }
-
-      if (!user || !user.email){
-        setIsGold(false);
-        return;
-      }
-
-      const { data: customers } = await getCustomers();
-      const customer = customers.find(
-        c => c.email === user.email
-      );
-
-      setIsGold(customer ? customer.isGold : false);
-    }
-
-    fetchGoldStatus();
-  }, [user]);
+  const customer = user?.email
+    ? customers.find((c) => c.email === user.email)
+    : null;
+  const isGold = user?.isAdmin ? false : customer?.isGold || false;
 
   if (!user)
     return (

@@ -104,7 +104,6 @@ src/
 - **axios** - HTTP client
 - **bootstrap** - CSS framework
 - **react-toastify** - Notifications
-- **joi-browser** - Form validation
 - **jwt-decode** - JWT token decoding
 
 ## 🏗️ Architecture Notes

@@ -1,32 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { getRentals } from "../services/rentalService";
+import useFetch from "../hooks/useFetch";
+import TableSkeleton from "./common/tableSkeleton";
+import Skeleton from "./common/skeleton";
 
 const Rentals = () => {
-  const [rentals, setRentals] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchRentals() {
-      try {
-        const { data } = await getRentals();
-        setRentals(data);
-      } catch (ex) {
-        console.error("Failed to load rentals:", ex);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchRentals();
-  }, []);
+  const { data: rentals = [], loading } = useFetch(
+    async () => {
+      const { data } = await getRentals();
+      return data;
+    },
+    []
+  );
 
   if (loading)
     return (
-      <div className="text-center py-5">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
+      <>
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <Skeleton width="150px" height="32px" />
+          <Skeleton width="80px" height="24px" rounded />
         </div>
-        <p className="text-muted mt-3">Loading rentals...</p>
-      </div>
+        <TableSkeleton rows={6} columns={3} />
+      </>
     );
 
   if (rentals.length === 0)

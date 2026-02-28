@@ -1,48 +1,60 @@
-import React, { useEffect, useState } from "react";
-import Joi from "joi-browser";
-import Form from "./common/form";
-import Select from "./common/select";
-import { toast } from "react-toastify";
+import React, { useEffect } from "react";
+import Joi from "joi";
+import useForm from "../hooks/useForm";
+import useFetch from "../hooks/useFetch";
+import useRentals from "../hooks/useRentals";
 import queryString from "query-string";
 import { getMovies } from "../services/movieService";
-import { saveRental } from "../services/rentalService";
 
 const RentalForm = ({ history, location }) => {
-
-
-  const [data, setData] = useState({
-    movieId: ""
-  });
-
-  const [errors, setErrors] = useState({});
-  const [movies, setMovies] = useState([]);
-
   const schema = {
-    movieId: Joi.string().required().label("Movie")
+    movieId: Joi.string().required().label("Movie"),
   };
 
+  const validateForm = (data) => {
+    const options = { abortEarly: false };
+    const { error } = Joi.object(schema).validate(data, options);
+    if (!error) return {};
+
+    const errors = {};
+    for (let item of error.details) {
+      errors[item.path[0]] = item.message;
+    }
+    return errors;
+  };
+
+  const { data, renderSelect, renderButton, handleSubmit, setData } = useForm(
+    {
+      movieId: "",
+    },
+    validateForm
+  );
+
+  const { data: moviesData } = useFetch(
+    async () => {
+      const { data } = await getMovies();
+      return data;
+    },
+    []
+  );
+
+  const movies = moviesData || [];
+
+  const { createRental } = useRentals(false);
+
   useEffect(() => {
-    async function loadData() {
-        const { data: movies } = await getMovies();
-        setMovies(movies);
+    const { movieId } = queryString.parse(location.search);
+    if (movieId) {
+      setData({ movieId });
+    }
+  }, [location.search, setData]);
 
-        const { movieId } = queryString.parse(location.search);
-        if (movieId) {
-          setData({ movieId });
-        }
-      } 
-
-    loadData();
-  }, [location.search]);
-
-  const handleSubmit = async () => {
+  const doSubmit = async () => {
     try {
-      await saveRental({ movieId: data.movieId });
-
-      toast.success("Movie rented successfully!");
+      await createRental(data.movieId);
       history.push("/movies");
     } catch (ex) {
-      toast.error(ex.response?.data || "Something went wrong");
+      // Error is already handled in the hook
     }
   };
 
@@ -51,28 +63,10 @@ const RentalForm = ({ history, location }) => {
     <div className="col-md-6">
       <h2 className="mb-4">Rent Movie</h2>
 
-      <Form
-        data={data}
-        setData={setData}
-        errors={errors}
-        setErrors={setErrors}
-        schema={schema}
-        onSubmit={handleSubmit}
-      >
-        
-
-        <Select
-          name="movieId"
-          label="Movie"
-          options={movies}
-          valueProperty="_id"
-          labelProperty="title"
-        />
-
-        <button type="submit" className="btn btn-primary">
-          Confirm Rental
-        </button>
-      </Form>
+      <form onSubmit={handleSubmit(doSubmit)}>
+        {renderSelect("movieId", "Movie", movies, "_id", "title")}
+        {renderButton("Confirm Rental")}
+      </form>
     </div>
   );
 };

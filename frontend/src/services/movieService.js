@@ -11,20 +11,26 @@ export function getMovie(movieId) {
 }
 
 export function saveMovie(movie) {
-  const body = {
-    title: movie.title,
-    genreId: movie.genreId,
-    numberInStock: Number(movie.numberInStock),
-    dailyRentalRate: Number(movie.dailyRentalRate),
-  };
+  const formData = new FormData();
 
-  if (movie._id) {
-    return http.put(apiEndpoint + "/" + movie._id, body);
+  formData.append("title", movie.title);
+  formData.append("genreId", movie.genreId);
+  formData.append("numberInStock", movie.numberInStock);
+  formData.append("dailyRentalRate", movie.dailyRentalRate);
+
+  
+  if (movie.poster) {
+    formData.append("poster", movie.poster);
   }
 
-  return http.post(apiEndpoint, body);
-}
+  
+  if (movie._id) {
+    return http.put(apiEndpoint + "/" + movie._id, formData);
+  }
 
+  
+  return http.post(apiEndpoint, formData);
+}
 
 export function deleteMovie(movieId) {
   return http.delete(apiEndpoint + "/" + movieId);

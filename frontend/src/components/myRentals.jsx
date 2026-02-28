@@ -1,43 +1,24 @@
-import React, { useEffect, useState } from "react";
-import { getMyRentals, returnRental } from "../services/rentalService";
-import auth from "../services/authService";
-import { toast } from "react-toastify";
+import React, { useState } from "react";
+import useAuth from "../hooks/useAuth";
+import useRentals from "../hooks/useRentals";
 import PaymentModal from "./paymentModal";
+import { toast } from "react-toastify";
+import TableSkeleton from "./common/tableSkeleton";
+import Skeleton from "./common/skeleton";
 
 const MyRentals = () => {
-  const user = auth.getCurrentUser();
-
-  const [rentals, setRentals] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [returning, setReturning] = useState(false);
+  const { user } = useAuth();
+  const {
+    activeRentals,
+    returnedRentals,
+    loading,
+    returning,
+    handleReturn,
+    calculateAmount,
+  } = useRentals(!!user);
 
   const [selectedRental, setSelectedRental] = useState(null);
   const [showPayment, setShowPayment] = useState(false);
-
-  useEffect(() => {
-    async function loadRentals() {
-      try {
-        const { data } = await getMyRentals();
-        setRentals(data);
-      } catch (ex) {
-        toast.error("Failed to load rentals.");
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    if (user) loadRentals();
-    else setLoading(false);
-  }, []);
-
-  const calculateAmount = (rental) => {
-    if (!rental) return 0;
-    const days = Math.max(
-      1,
-      Math.ceil((new Date() - new Date(rental.dateOut)) / (1000 * 60 * 60 * 24))
-    );
-    return days * rental.movie.dailyRentalRate;
-  };
 
   const handleReturnClick = (rental) => {
     if (rental.dateReturned) {
@@ -52,34 +33,31 @@ const MyRentals = () => {
   const handlePayment = async (paymentMethod) => {
     if (!selectedRental) return;
 
-    setReturning(true);
     try {
-      await returnRental(selectedRental._id, paymentMethod);
-      toast.success("Payment successful. Movie returned!");
-
-      const { data } = await getMyRentals();
-      setRentals(data);
-    } catch (ex) {
-      toast.error(ex.response?.data || "Payment failed.");
-    } finally {
-      setReturning(false);
+      await handleReturn(selectedRental._id, paymentMethod);
       setShowPayment(false);
       setSelectedRental(null);
+    } catch (ex) {
+      // Error is already handled in the hook
     }
   };
 
   if (loading)
     return (
-      <div className="text-center py-5">
-        <div className="spinner-border text-primary" role="status" />
-        <p className="text-muted mt-3">Loading your rentals...</p>
+      <div className="mt-4">
+        <Skeleton width="150px" height="32px" className="mb-4" />
+        <div className="card shadow-sm mb-4">
+          <div className="card-body p-0">
+            <TableSkeleton rows={4} columns={5} />
+          </div>
+        </div>
       </div>
     );
 
   if (!user)
     return <p className="mt-3">Please login to view your rentals.</p>;
 
-  if (rentals.length === 0)
+  if (activeRentals.length === 0 && returnedRentals.length === 0)
     return (
       <div className="mt-4 text-muted">
         <h5>No rentals yet</h5>
@@ -87,8 +65,6 @@ const MyRentals = () => {
       </div>
     );
 
-  const activeRentals = rentals.filter(r => !r.dateReturned);
-  const returnedRentals = rentals.filter(r => r.dateReturned);
 
   return (
     <div className="mt-4">
