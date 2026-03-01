@@ -11,13 +11,20 @@ const watchlists = require('../routes/watchlists');
 const error = require('../middleware/error');
 
 module.exports = function(app) {
-  app.use(cors());              // ✅ MUST BE FIRST
+
+  const corsOptions = {
+    origin: true,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token', 'X-Requested-With'],
+    exposedHeaders: ['x-auth-token']
+  };
+
+  app.use(cors(corsOptions));   // FIRST
   app.use(express.json());
 
   app.get('/', (req, res) => {
-    res.send({
-      message: 'Welcome to Vidly API! 🎬'
-    });
+    res.send({ message: 'Welcome to Vidly API! 🎬' });
   });
 
   app.use('/api/genres', genres);
