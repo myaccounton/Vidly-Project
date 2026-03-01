@@ -103,6 +103,10 @@ router.put(
       movie.posterUrl = req.file.path;  
     }
 
+    if (!movie.posterUrl) {
+      return res.status(400).send('Poster is required.');
+    }
+
     await movie.save();
     res.send(movie);
   })
