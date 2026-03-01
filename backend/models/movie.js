@@ -28,7 +28,7 @@ const movieSchema = new mongoose.Schema({
   },
   posterUrl:{
     type: String,
-    required: true
+    default: ""
   }
 });
 
