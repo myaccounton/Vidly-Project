@@ -6,7 +6,7 @@ const app = require("./app");
 require("./startup/prod")(app);
 
 mongoose
-  .connect("mongodb://localhost/vidly")
+  .connect(process.env.MONGODB_URI)
   .then(() => logger.info("Connected to MongoDB..."))
   .catch(err => {
     logger.error("Could not connect to MongoDB...", err);
