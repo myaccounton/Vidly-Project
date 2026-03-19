@@ -11,20 +11,28 @@ const watchlists = require('../routes/watchlists');
 const error = require('../middleware/error');
 
 module.exports = function(app) {
-
+  // Configure CORS with explicit options for production
   const corsOptions = {
-    origin: true,
+    origin: true, // Allow all origins - can be restricted later if needed
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token', 'X-Requested-With'],
-    exposedHeaders: ['x-auth-token']
+    exposedHeaders: ['x-auth-token'],
+    preflightContinue: false,
+    optionsSuccessStatus: 204
   };
-
-  app.use(cors(corsOptions));   // FIRST
+  
+  app.use(cors(corsOptions));  // ✅ MUST BE FIRST - before any routes
+  
+  // Handle preflight requests explicitly
+  app.options('*', cors(corsOptions));
+  
   app.use(express.json());
 
   app.get('/', (req, res) => {
-    res.send({ message: 'Welcome to Vidly API! 🎬' });
+    res.send({
+      message: 'Welcome to Vidly API! 🎬'
+    });
   });
 
   app.use('/api/genres', genres);

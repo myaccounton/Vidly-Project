@@ -14,7 +14,8 @@ export async function login(email, password) {
 
 export async function register(user) {
   return http.post( "/users", {
-    email: user.username,
+    // Register form stores email in `user.email`
+    email: user.email,
     password: user.password,
     name: user.name
   });

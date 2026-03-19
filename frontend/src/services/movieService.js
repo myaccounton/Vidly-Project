@@ -11,31 +11,27 @@ export function getMovie(movieId) {
 }
 
 export function saveMovie(movie) {
-  const formData = new FormData();
+  const body = {
+    title: movie.title,
+    genreId: movie.genreId,               // 🔥 FIX HERE
+    numberInStock: Number(movie.numberInStock),
+    dailyRentalRate: Number(movie.dailyRentalRate)
+  };
 
-  formData.append("title", movie.title);
-  formData.append("genreId", movie.genreId);
-  formData.append("numberInStock", movie.numberInStock);
-  formData.append("dailyRentalRate", movie.dailyRentalRate);
-
-  
-  if (movie.poster) {
-    formData.append("poster", movie.poster);
-  }
-
-  
   if (movie._id) {
-    return http.put(apiEndpoint + "/" + movie._id, formData);
+    return http.put(apiEndpoint + "/" + movie._id, body);
   }
 
-  
-  return http.post(apiEndpoint, formData);
+  return http.post(apiEndpoint, body);
 }
+
 
 export function deleteMovie(movieId) {
   return http.delete(apiEndpoint + "/" + movieId);
 }
 
 export function getRecommendations(movieId) {
+  // Use `apiEndpoint` so this calls `/movies/recommendations/:id` (then baseURL is applied)
   return http.get(apiEndpoint + "/recommendations/" + movieId);
 }
+

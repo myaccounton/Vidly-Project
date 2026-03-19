@@ -21,7 +21,7 @@ const Movies = ({ user }) => {
   const { currentPage, handlePageChange, getPagedData, resetPage } = usePagination(
     movies,
     pageSize
-  );
+    );
 
   const { sortColumn, handleSort, getSortedData } = useSort(movies);
 
@@ -44,8 +44,8 @@ const Movies = ({ user }) => {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
         (m) =>
-          m.title.toLowerCase().includes(query) ||
-          m.genre.name.toLowerCase().includes(query)
+        m.title.toLowerCase().includes(query) ||
+        m.genre.name.toLowerCase().includes(query)
       );
     }
 

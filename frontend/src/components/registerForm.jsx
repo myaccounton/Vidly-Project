@@ -64,7 +64,7 @@ const RegisterForm = ({ history }) => {
                 label="Email"
                 type="email"
               />
-
+              
               <PasswordInput
                 name="password"
                 label="Password"

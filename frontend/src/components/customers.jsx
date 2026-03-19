@@ -11,7 +11,7 @@ const Customers = () => {
   const { user } = useAuth();
   const { data: customers = [], loading, refetch } = useFetch(
     async () => {
-      const { data } = await getCustomers();
+        const { data } = await getCustomers();
       return data;
     },
     []
@@ -30,7 +30,7 @@ const Customers = () => {
 
   const handleDelete = async (customer) => {
     try {
-      await deleteCustomer(customer._id);
+    await deleteCustomer(customer._id);
       toast.success("Customer deleted successfully");
       refetch();
     } catch (ex) {

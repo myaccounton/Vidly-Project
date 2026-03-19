@@ -7,7 +7,7 @@ import Skeleton from "./common/skeleton";
 const Rentals = () => {
   const { data: rentals = [], loading } = useFetch(
     async () => {
-      const { data } = await getRentals();
+        const { data } = await getRentals();
       return data;
     },
     []
