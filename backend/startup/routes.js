@@ -10,7 +10,7 @@ const returns = require('../routes/returns');
 const watchlists = require('../routes/watchlists');
 const error = require('../middleware/error');
 
-module.exports = function(app) {
+module.exports = function (app) {
   // Configure CORS with explicit options for production
   const corsOptions = {
     origin: true, // Allow all origins - can be restricted later if needed
@@ -21,12 +21,12 @@ module.exports = function(app) {
     preflightContinue: false,
     optionsSuccessStatus: 204
   };
-  
+
   app.use(cors(corsOptions));  // ✅ MUST BE FIRST - before any routes
-  
-  // Handle preflight requests explicitly
-  app.options('*', cors(corsOptions));
-  
+
+  // No need for an explicit app.options(...) handler.
+  // The `cors` middleware above will automatically handle CORS preflight (OPTIONS).
+
   app.use(express.json());
 
   app.get('/', (req, res) => {
