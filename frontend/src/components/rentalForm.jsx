@@ -32,13 +32,12 @@ const RentalForm = ({ history, location }) => {
 
   const { data: moviesData } = useFetch(
     async () => {
-      const { data } = await getMovies();
-      return data;
+      return await getMovies();
     },
     []
   );
 
-  const movies = moviesData || [];
+  const movies = Array.isArray(moviesData) ? moviesData : [];
 
   const { createRental } = useRentals(false);
 

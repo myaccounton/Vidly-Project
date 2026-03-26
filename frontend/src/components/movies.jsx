@@ -11,6 +11,7 @@ import useSort from "../hooks/useSort";
 
 const Movies = ({ user }) => {
   const { movies, genres, loading, handleDelete, handleLike } = useMovies();
+  const safeMovies = Array.isArray(movies) ? movies : [];
 
   const [selectedGenre, setSelectedGenre] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -19,11 +20,11 @@ const Movies = ({ user }) => {
   const [pageSize, setPageSize] = useState(PAGE_SIZE);
 
   const { currentPage, handlePageChange, getPagedData, resetPage } = usePagination(
-    movies,
+    safeMovies,
     pageSize
     );
 
-  const { sortColumn, setSortColumn, getSortedData } = useSort(movies);
+  const { sortColumn, setSortColumn, getSortedData } = useSort(safeMovies);
 
   const handleGenreSelect = useCallback((genre) => {
     setSelectedGenre(genre);
@@ -34,7 +35,7 @@ const Movies = ({ user }) => {
   }, []);
 
   const { totalCount, data: pagedMovies } = useMemo(() => {
-    let filtered = movies;
+    let filtered = safeMovies;
 
     if (selectedGenre && selectedGenre._id) {
       filtered = filtered.filter((m) => m.genre._id === selectedGenre._id);
@@ -62,7 +63,7 @@ const Movies = ({ user }) => {
 
     return result;
   }, [
-    movies,
+    safeMovies,
     selectedGenre,
     searchQuery,
     showOnlyLiked,
@@ -76,13 +77,13 @@ const Movies = ({ user }) => {
   }, [selectedGenre, searchQuery, showOnlyLiked, showOnlyAvailable, pageSize, resetPage]);
 
   const likedCount = useMemo(
-    () => movies.filter((movie) => movie.liked).length,
-    [movies]
+    () => safeMovies.filter((movie) => movie.liked).length,
+    [safeMovies]
   );
 
   const availableCount = useMemo(
-    () => movies.filter((movie) => movie.numberInStock > 0).length,
-    [movies]
+    () => safeMovies.filter((movie) => movie.numberInStock > 0).length,
+    [safeMovies]
   );
 
   const clearAllFilters = useCallback(() => {
@@ -102,7 +103,7 @@ const Movies = ({ user }) => {
 
   if (loading) return <MoviesSkeleton />;
 
-  if (movies.length === 0)
+  if (safeMovies.length === 0)
     return (
       <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-10 text-center text-zinc-300">
         <h5 className="mb-3 text-2xl font-semibold text-white">No Movies Available</h5>

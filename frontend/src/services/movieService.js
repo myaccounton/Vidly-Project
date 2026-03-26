@@ -2,8 +2,13 @@ import http from "./httpService";
 
 const apiEndpoint = "/movies";
 
-export function getMovies() {
-  return http.get(apiEndpoint);
+export async function getMovies() {
+  const response = await http.get(apiEndpoint);
+  const payload = response && Object.prototype.hasOwnProperty.call(response, "data")
+    ? response.data
+    : response;
+
+  return Array.isArray(payload) ? payload : [];
 }
 
 export function getMovie(movieId) {

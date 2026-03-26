@@ -11,16 +11,30 @@ const useMovies = (autoFetch = true) => {
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const [{ data: moviesData }, { data: genresData }] = await Promise.all([
+      const [moviesResponse, genresResponse] = await Promise.all([
         getMovies(),
         getGenres(),
       ]);
 
-      setMovies(moviesData);
-      setGenres([{ _id: '', name: 'All Genres' }, ...genresData]);
+      const safeMovies = Array.isArray(moviesResponse)
+        ? moviesResponse
+        : Array.isArray(moviesResponse?.data)
+          ? moviesResponse.data
+          : [];
+
+      const safeGenres = Array.isArray(genresResponse?.data)
+        ? genresResponse.data
+        : Array.isArray(genresResponse)
+          ? genresResponse
+          : [];
+
+      setMovies(safeMovies);
+      setGenres([{ _id: '', name: 'All Genres' }, ...safeGenres]);
     } catch (ex) {
       console.error('Failed to load data:', ex);
       toast.error('Failed to load movies');
+      setMovies([]);
+      setGenres([{ _id: '', name: 'All Genres' }]);
     } finally {
       setLoading(false);
     }
@@ -41,7 +55,9 @@ const useMovies = (autoFetch = true) => {
 
     const originalMovies = movies;
 
-    setMovies((prevMovies) => prevMovies.filter((m) => m._id !== movie._id));
+    setMovies((prevMovies) =>
+      (Array.isArray(prevMovies) ? prevMovies : []).filter((m) => m._id !== movie._id)
+    );
 
     try {
       await deleteMovie(movie._id);
@@ -58,7 +74,7 @@ const useMovies = (autoFetch = true) => {
 
   const handleLike = useCallback((movie) => {
     setMovies((prevMovies) =>
-      prevMovies.map((m) =>
+      (Array.isArray(prevMovies) ? prevMovies : []).map((m) =>
         m._id === movie._id ? { ...m, liked: !m.liked } : m
       )
     );
