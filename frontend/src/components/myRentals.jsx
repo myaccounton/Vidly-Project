@@ -55,42 +55,42 @@ const MyRentals = () => {
     );
 
   if (!user)
-    return <p className="mt-3">Please login to view your rentals.</p>;
+    return <p className="mt-3 text-gray-300">Please login to view your rentals.</p>;
 
   if (activeRentals.length === 0 && returnedRentals.length === 0)
     return (
-      <div className="mt-4 text-muted">
-        <h5>No rentals yet</h5>
-        <p>Rent a movie to see it here 🎬</p>
+      <div className="mt-4 text-gray-300">
+        <h5 className="text-gray-100">No rentals yet</h5>
+        <p className="text-gray-400">Rent a movie to see it here 🎬</p>
       </div>
     );
 
 
   return (
     <div className="mt-4">
-      <h3 className="mb-4">My Rentals</h3>
+      <h3 className="mb-4 text-gray-100">My Rentals</h3>
 
       {activeRentals.length > 0 && (
         <>
-          <h5 className="mb-3">Active Rentals</h5>
+          <h5 className="mb-3 text-gray-200">Active Rentals</h5>
           <div className="card shadow-sm mb-4">
             <div className="card-body p-0">
               <table className="table table-hover mb-0">
                 <thead>
                   <tr>
-                    <th>Movie</th>
-                    <th>Date Rented</th>
-                    <th>Daily Rate</th>
-                    <th>Status</th>
-                    <th>Action</th>
+                    <th className="text-gray-300">Movie</th>
+                    <th className="text-gray-300">Date Rented</th>
+                    <th className="text-gray-300">Daily Rate</th>
+                    <th className="text-gray-300">Status</th>
+                    <th className="text-gray-300">Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   {activeRentals.map(rental => (
                     <tr key={rental._id}>
-                      <td>{rental.movie.title}</td>
-                      <td>{new Date(rental.dateOut).toLocaleDateString()}</td>
-                      <td>Rs {rental.movie.dailyRentalRate}/day</td>
+                      <td className="text-gray-200">{rental.movie.title}</td>
+                      <td className="text-gray-300">{new Date(rental.dateOut).toLocaleDateString()}</td>
+                      <td className="text-gray-300">Rs {rental.movie.dailyRentalRate}/day</td>
                       <td>
                         <span className="badge bg-success">Rented</span>
                       </td>
@@ -114,26 +114,26 @@ const MyRentals = () => {
 
       {returnedRentals.length > 0 && (
         <>
-          <h5 className="mb-3">Returned Rentals</h5>
+          <h5 className="mb-3 text-gray-200">Returned Rentals</h5>
           <div className="card shadow-sm">
             <div className="card-body p-0">
               <table className="table table-hover mb-0">
                 <thead>
                   <tr>
-                    <th>Movie</th>
-                    <th>Date Rented</th>
-                    <th>Date Returned</th>
-                    <th>Amount</th>
-                    <th>Status</th>
+                    <th className="text-gray-300">Movie</th>
+                    <th className="text-gray-300">Date Rented</th>
+                    <th className="text-gray-300">Date Returned</th>
+                    <th className="text-gray-300">Amount</th>
+                    <th className="text-gray-300">Status</th>
                   </tr>
                 </thead>
                 <tbody>
                   {returnedRentals.map(rental => (
                     <tr key={rental._id}>
-                      <td>{rental.movie.title}</td>
-                      <td>{new Date(rental.dateOut).toLocaleDateString()}</td>
-                      <td>{new Date(rental.dateReturned).toLocaleDateString()}</td>
-                      <td>Rs {rental.payment?.amount?.toFixed(2) || "0.00"}</td>
+                      <td className="text-gray-200">{rental.movie.title}</td>
+                      <td className="text-gray-300">{new Date(rental.dateOut).toLocaleDateString()}</td>
+                      <td className="text-gray-300">{new Date(rental.dateReturned).toLocaleDateString()}</td>
+                      <td className="text-gray-300">Rs {rental.payment?.amount?.toFixed(2) || "0.00"}</td>
                       <td>
                         <span className="badge bg-secondary">Paid</span>
                       </td>

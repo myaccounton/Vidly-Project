@@ -7,8 +7,8 @@ import MovieForm from "./components/movieForm";
 import Rentals from "./components/rentals";
 import NotFound from "./components/notFound";
 import NavBar from "./components/navbar";
-import LoginForm from "./components/loginForm";
-import RegisterForm from "./components/registerForm";
+import Login from "./components/Login";
+import Register from "./components/Register";
 import RentalForm from "./components/rentalForm";
 import MyRentals from "./components/myRentals";
 import ProtectedRoute from "./components/common/protectedRoute";
@@ -27,10 +27,10 @@ function App() {
     <ErrorBoundary>
       <ToastContainer />
       <NavBar user={user} />
-      <main className="container mt-3">
+      <main className="mx-auto min-h-screen w-full max-w-7xl px-4 py-6">
         <Switch>
-          <Route path="/register" component={RegisterForm} />
-          <Route path="/login" component={LoginForm} />
+          <Route path="/register" component={Register} />
+          <Route path="/login" component={Login} />
           <Route path="/logout" component={Logout} />
           <ProtectedRoute path="/movies/:id" component={MovieForm} />
           <Route 

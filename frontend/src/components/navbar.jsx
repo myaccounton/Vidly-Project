@@ -22,85 +22,75 @@ const NavBar = ({ user }) => {
   }, []);
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div className="container">
-        <NavLink className="navbar-brand" to="/">
+    <nav className="w-full border-b border-gray-800 bg-gray-900">
+      <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3">
+        <NavLink className="text-2xl font-bold text-white no-underline" to="/">
           Vidly
         </NavLink>
 
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#vidlyNavbar"
-        >
-          <span className="navbar-toggler-icon" />
-        </button>
+        <div className="flex w-full flex-col gap-3 md:w-auto md:flex-row md:items-center md:justify-between md:gap-8">
+          <ul className="m-0 flex list-none flex-wrap items-center gap-4 p-0">
+            <li>
+              <NavLink className="text-sm font-medium text-gray-300 no-underline hover:text-white" to="/movies">
+                Movies
+              </NavLink>
+            </li>
 
-        <div className="collapse navbar-collapse" id="vidlyNavbar">
-          <ul className="navbar-nav me-auto">
-  <li className="nav-item">
-    <NavLink className="nav-link" to="/movies">
-      Movies
-    </NavLink>
-  </li>
+            {user && !user.isAdmin && (
+              <li>
+                <NavLink className="text-sm font-medium text-gray-300 no-underline hover:text-white" to="/my-rentals">
+                  My Rentals
+                </NavLink>
+              </li>
+            )}
 
-  {user && !user.isAdmin && (
-    <li className="nav-item">
-      <NavLink className="nav-link" to="/my-rentals">
-        My Rentals
-      </NavLink>
-    </li>
-  )}
-  
-{user?.isAdmin && (
-  <>
-    <li className="nav-item">
-      <NavLink className="nav-link" to="/rentals">
-        Rentals
-      </NavLink>
-    </li>
-  </>
-)}
+            {user?.isAdmin && (
+              <li>
+                <NavLink className="text-sm font-medium text-gray-300 no-underline hover:text-white" to="/rentals">
+                  Rentals
+                </NavLink>
+              </li>
+            )}
 
-  {user && (
-    <li className="nav-item">
-      <NavLink className="nav-link" to="/watchlist">
-        Watchlist
-        {watchlistCount > 0 && (
-          <span className="badge bg-secondary ms-2">
-            {watchlistCount}
-          </span>
-        )}
-      </NavLink>
-    </li>
-  )}
-</ul>
-          <ul className="navbar-nav">
+            {user && (
+              <li>
+                <NavLink className="text-sm font-medium text-gray-300 no-underline hover:text-white" to="/watchlist">
+                  Watchlist
+                  {watchlistCount > 0 && (
+                    <span className="ml-2 rounded-full bg-gray-700 px-2 py-0.5 text-xs text-gray-100">
+                      {watchlistCount}
+                    </span>
+                  )}
+                </NavLink>
+              </li>
+            )}
+          </ul>
+
+          <ul className="m-0 flex list-none flex-wrap items-center gap-4 p-0">
             {user ? (
               <>
-                <li className="nav-item">
-                  <NavLink className="nav-link" to="/profile">
+                <li>
+                  <NavLink className="text-sm font-medium text-gray-300 no-underline hover:text-white" to="/profile">
                     {user.name}
                   </NavLink>
                 </li>
 
-                <li className="nav-item">
-                  <NavLink className="nav-link" to="/logout">
+                <li>
+                  <NavLink className="text-sm font-medium text-gray-300 no-underline hover:text-white" to="/logout">
                     Logout
                   </NavLink>
                 </li>
               </>
             ) : (
               <>
-                <li className="nav-item">
-                  <NavLink className="nav-link" to="/login">
+                <li>
+                  <NavLink className="text-sm font-medium text-gray-300 no-underline hover:text-white" to="/login">
                     Login
                   </NavLink>
                 </li>
 
-                <li className="nav-item">
-                  <NavLink className="nav-link" to="/register">
+                <li>
+                  <NavLink className="text-sm font-medium text-gray-300 no-underline hover:text-white" to="/register">
                     Register
                   </NavLink>
                 </li>

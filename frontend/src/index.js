@@ -6,11 +6,9 @@ import "./index.css";
 import "bootstrap/dist/css/bootstrap.css";
 import "font-awesome/css/font-awesome.css";
 
-// Polyfill for process variable (needed by some libraries)
-if (typeof window !== 'undefined' && typeof window.process === 'undefined') {
-  window.process = {
-    env: {}
-  };
+// Polyfill for libraries that reference `process` in the browser.
+if (typeof window !== "undefined" && typeof window.process === "undefined") {
+  window.process = { env: {} };
 }
 
 ReactDOM.render(

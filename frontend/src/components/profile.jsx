@@ -24,21 +24,21 @@ const Profile = () => {
   if (!user)
     return (
       <div className="container mt-4">
-        <h4>User not logged in</h4>
+        <h4 className="text-gray-100">User not logged in</h4>
       </div>
     );
 
   return (
     <div className="container mt-4">
-      <h2 className="mb-4">My Profile</h2>
+      <h2 className="mb-4 text-gray-100">My Profile</h2>
 
       <div className="card shadow-sm" style={{ maxWidth: "500px" }}>
         <div className="card-body">
-          <h5 className="card-title mb-3">{user.name}</h5>
+          <h5 className="card-title mb-3 text-gray-100">{user.name}</h5>
 
           <p className="mb-2">
             <strong>Email:</strong>{" "}
-            <span className="text-muted">
+            <span className="text-gray-300">
               {user.email || "Not available"}
             </span>
           </p>
@@ -53,7 +53,7 @@ const Profile = () => {
           <p className="mb-2">
             <strong>Membership:</strong>{" "}
             {user.isAdmin ? (
-              <span className="text-muted">Admin Account</span>
+              <span className="text-gray-300">Admin Account</span>
             ) : isGold ? (
               <span className="badge bg-warning text-dark">
                 🌟 Gold Member
@@ -74,7 +74,7 @@ const Profile = () => {
 
           <hr />
 
-          <p className="text-muted mb-0">
+          <p className="text-gray-400 mb-0">
             Logged in successfully
           </p>
         </div>

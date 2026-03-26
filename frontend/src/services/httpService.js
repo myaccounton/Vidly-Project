@@ -1,30 +1,23 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
+const isLocalhost =
+  typeof window !== "undefined" &&
+  (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
 
-axios.defaults.baseURL = process.env.REACT_APP_API_URL || "/api";
+axios.defaults.baseURL = isLocalhost ? "http://localhost:10000/api" : "/api";
 
-// Set content type for FormData requests
-axios.interceptors.request.use(
-  (config) => {
-    if (config.data instanceof FormData) {
-      config.headers['Content-Type'] = 'multipart/form-data';
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
+// RESPONSE INTERCEPTOR
 axios.interceptors.response.use(
   response => response,
   error => {
+    // Expected errors (4xx) → handled by calling code
     const expectedError =
       error.response &&
       error.response.status >= 400 &&
       error.response.status < 500;
 
+    // Unexpected errors (5xx / network)
     if (!expectedError) {
       toast.error("An unexpected error occurred.");
     }
@@ -33,6 +26,7 @@ axios.interceptors.response.use(
   }
 );
 
+// JWT helpers
 function setJwt(jwt) {
   axios.defaults.headers.common["x-auth-token"] = jwt;
 }
@@ -41,6 +35,7 @@ function clearJwt() {
   delete axios.defaults.headers.common["x-auth-token"];
 }
 
+// Export HTTP methods
 export default {
   get: axios.get,
   post: axios.post,

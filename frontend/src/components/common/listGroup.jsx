@@ -8,23 +8,21 @@ const ListGroup = ({
   onItemSelect,
 }) => {
   return (
-    <div className="card shadow-sm">
-    <ul className="list-group shadow-sm">
+    <ul className="space-y-2">
       {items.map((item) => (
         <li
           onClick={() => onItemSelect(item)}
           key={item[valueProperty]}
           className={
             item[valueProperty] === selectedItem?.[valueProperty]
-            ? "list-group-item active"
-            : "list-group-item"   
+              ? "clickable rounded-lg bg-blue-600/20 px-3 py-2 text-sm font-medium text-blue-200 transition"
+              : "clickable rounded-lg bg-gray-800 px-3 py-2 text-sm text-gray-300 transition hover:bg-gray-700"
           }
         >
           {item[textProperty]}
         </li>
       ))}
     </ul>
-   </div>
   );
 };
 

@@ -157,7 +157,7 @@ const MovieForm = ({ match, history }) => {
       )}
 
       <div className={data.posterUrl || data.poster ? "col-md-8" : "col-md-12"}>
-        <h2 className="mb-3">{isAdmin ? (movieId === "new" ? "New Movie" : "Edit Movie") : "Movie Details"}</h2>
+        <h2 className="mb-3 text-gray-100">{isAdmin ? (movieId === "new" ? "New Movie" : "Edit Movie") : "Movie Details"}</h2>
 
         {user && !isAdmin && !data.posterUrl && (
           <Link
@@ -182,8 +182,8 @@ const MovieForm = ({ match, history }) => {
         {!isAdmin && data.posterUrl && (
           <div className="card shadow-sm">
             <div className="card-body">
-              <h5 className="card-title">{data.title}</h5>
-              <p className="card-text">
+              <h5 className="card-title text-gray-100">{data.title}</h5>
+              <p className="card-text text-gray-200">
                 <strong>Genre:</strong> {genresData?.find(g => g._id === data.genreId)?.name || 'N/A'}<br />
                 <strong>Stock:</strong> {data.numberInStock}<br />
                 <strong>Rate:</strong> Rs {data.dailyRentalRate}/day
