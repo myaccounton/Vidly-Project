@@ -9,11 +9,14 @@ const auth = require('../routes/auth');
 const returns = require('../routes/returns');
 const watchlists = require('../routes/watchlists');
 const error = require('../middleware/error');
+const stats = require('../routes/stats')
+
+
 
 module.exports = function (app) {
   // Configure CORS with explicit options for production
   const corsOptions = {
-    origin: true, // Allow all origins - can be restricted later if needed
+    origin: true, 
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token', 'X-Requested-With'],
@@ -22,10 +25,9 @@ module.exports = function (app) {
     optionsSuccessStatus: 204
   };
 
-  app.use(cors(corsOptions));  // ✅ MUST BE FIRST - before any routes
+  app.use(cors(corsOptions));  
 
-  // No need for an explicit app.options(...) handler.
-  // The `cors` middleware above will automatically handle CORS preflight (OPTIONS).
+ 
 
   app.use(express.json());
 
@@ -43,6 +45,7 @@ module.exports = function (app) {
   app.use('/api/auth', auth);
   app.use('/api/returns', returns);
   app.use('/api/watchlists', watchlists);
+  app.use("/api/stats", stats);
 
   app.use(error);
 };
