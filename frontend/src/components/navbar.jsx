@@ -45,11 +45,18 @@ const NavBar = ({ user }) => {
             )}
 
             {user?.isAdmin && (
-              <li>
-                <NavLink className="text-sm font-medium text-gray-300 no-underline hover:text-white" to="/rentals">
-                  Rentals
-                </NavLink>
-              </li>
+              <>
+                <li>
+                  <NavLink className="text-sm font-medium text-gray-300 no-underline hover:text-white" to="/dashboard">
+                    Dashboard
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink className="text-sm font-medium text-gray-300 no-underline hover:text-white" to="/rentals">
+                    Rentals
+                  </NavLink>
+                </li>
+              </>
             )}
 
             {user && (

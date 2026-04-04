@@ -16,6 +16,7 @@ import AdminRoute from "./components/common/adminRoute";
 import ErrorBoundary from "./components/common/errorBoundary";
 import Logout from "./components/logout";
 import Profile from "./components/profile";
+import Dashboard from "./components/dashboard";
 import useAuth from "./hooks/useAuth";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
@@ -44,6 +45,7 @@ function App() {
               user ? <MyRentals {...props} /> : <Redirect to="/login" />
             } 
           />
+          <AdminRoute path="/dashboard" component={Dashboard} />
           <AdminRoute path="/rentals" component={Rentals} />
           <Route path="/not-found" component={NotFound} />
           <Route
