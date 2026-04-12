@@ -20,14 +20,16 @@ async function seed() {
       title: "Inception",
       genre: { _id: genres[0]._id, name: genres[0].name },
       numberInStock: 10,
-      dailyRentalRate: 8
+      dailyRentalRate: 8,
+      posterUrl: "https://placehold.co/300x450/1a1a2e/eee?text=Inception",
     },
     {
       title: "Hangover",
       genre: { _id: genres[1]._id, name: genres[1].name },
       numberInStock: 5,
-      dailyRentalRate: 8
-    }
+      dailyRentalRate: 8,
+      posterUrl: "https://placehold.co/300x450/16213e/eee?text=Hangover",
+    },
   ]);
 
   console.log("Database seeded successfully...");
