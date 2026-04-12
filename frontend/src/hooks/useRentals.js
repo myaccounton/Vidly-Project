@@ -1,5 +1,10 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { getMyRentals, returnRental, saveRental } from '../services/rentalService';
+import {
+  getMyRentals,
+  getRentalSummary,
+  returnRental,
+  saveRental,
+} from '../services/rentalService';
 import { toast } from 'react-toastify';
 
 const useRentals = (autoFetch = true) => {
@@ -28,42 +33,61 @@ const useRentals = (autoFetch = true) => {
     }
   }, [autoFetch, fetchRentals]);
 
-  const createRental = useCallback(async (movieId) => {
+  const createRental = useCallback(async (movieId, payment = {}) => {
     try {
-      await saveRental({ movieId });
-      toast.success('Movie rented successfully!');
+      await saveRental({
+        movieId,
+        initialPayment: Number(payment.initialPayment),
+        paymentStatus: payment.paymentStatus ?? 'SUCCESS',
+        paymentMethod: payment.paymentMethod,
+      });
+      toast.success('Rental started');
       return true;
     } catch (ex) {
-      toast.error(ex.response?.data || 'Something went wrong');
+      toast.error(
+        typeof ex.response?.data === 'string'
+          ? ex.response.data
+          : ex.response?.data?.message || 'Something went wrong'
+      );
       throw ex;
     }
   }, []);
 
-  const handleReturn = useCallback(async (rentalId, paymentMethod) => {
+  const fetchReturnSummary = useCallback(async (rentalId) => {
     try {
-      setReturning(true);
-      await returnRental(rentalId, paymentMethod);
-      toast.success('Payment successful. Movie returned!');
-      
-      const { data } = await getMyRentals();
-      setRentals(data);
-      return true;
+      const { data } = await getRentalSummary(rentalId);
+      return data;
     } catch (ex) {
-      toast.error(ex.response?.data || 'Payment failed.');
+      toast.error(
+        typeof ex.response?.data === 'string'
+          ? ex.response.data
+          : 'Could not load return details.'
+      );
       throw ex;
-    } finally {
-      setReturning(false);
     }
   }, []);
 
-  const calculateAmount = useCallback((rental) => {
-    if (!rental) return 0;
-    const days = Math.max(
-      1,
-      Math.ceil((new Date() - new Date(rental.dateOut)) / (1000 * 60 * 60 * 24))
-    );
-    return days * rental.movie.dailyRentalRate;
-  }, []);
+  const submitReturn = useCallback(
+    async (rentalId, body) => {
+      try {
+        setReturning(true);
+        await returnRental(rentalId, body);
+        toast.success('Movie returned. Thank you!');
+        await fetchRentals();
+        return true;
+      } catch (ex) {
+        toast.error(
+          typeof ex.response?.data === 'string'
+            ? ex.response.data
+            : 'Return failed.'
+        );
+        throw ex;
+      } finally {
+        setReturning(false);
+      }
+    },
+    [fetchRentals]
+  );
 
   const activeRentals = useMemo(
     () => rentals.filter((r) => !r.dateReturned),
@@ -83,8 +107,8 @@ const useRentals = (autoFetch = true) => {
     returning,
     fetchRentals,
     createRental,
-    handleReturn,
-    calculateAmount,
+    fetchReturnSummary,
+    submitReturn,
   };
 };
 

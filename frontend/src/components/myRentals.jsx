@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import useAuth from "../hooks/useAuth";
 import useRentals from "../hooks/useRentals";
-import PaymentModal from "./paymentModal";
+import RentReturnModal from "./rentReturnModal";
 import { toast } from "react-toastify";
 import TableSkeleton from "./common/tableSkeleton";
 import Skeleton from "./common/skeleton";
@@ -13,33 +13,47 @@ const MyRentals = () => {
     returnedRentals,
     loading,
     returning,
-    handleReturn,
-    calculateAmount,
+    fetchReturnSummary,
+    submitReturn,
   } = useRentals(!!user);
 
-  const [selectedRental, setSelectedRental] = useState(null);
-  const [showPayment, setShowPayment] = useState(false);
+  const [returnSummary, setReturnSummary] = useState(null);
+  const [showReturnModal, setShowReturnModal] = useState(false);
+  const [loadingSummary, setLoadingSummary] = useState(false);
 
-  const handleReturnClick = (rental) => {
+  const handleReturnClick = async (rental) => {
     if (rental.dateReturned) {
       toast.error("This movie has already been returned.");
       return;
     }
 
-    setSelectedRental(rental);
-    setShowPayment(true);
+    setLoadingSummary(true);
+    try {
+      const summary = await fetchReturnSummary(rental._id);
+      setReturnSummary(summary);
+      setShowReturnModal(true);
+    } catch (ex) {
+      // toast in hook
+    } finally {
+      setLoadingSummary(false);
+    }
   };
 
-  const handlePayment = async (paymentMethod) => {
-    if (!selectedRental) return;
-
+  const handleSubmitReturn = async (body) => {
+    if (!returnSummary?._id) return;
     try {
-      await handleReturn(selectedRental._id, paymentMethod);
-      setShowPayment(false);
-      setSelectedRental(null);
+      await submitReturn(returnSummary._id, body);
+      setShowReturnModal(false);
+      setReturnSummary(null);
     } catch (ex) {
-      // Error is already handled in the hook
+      // toast in hook
     }
+  };
+
+  const closeReturnModal = () => {
+    if (returning) return;
+    setShowReturnModal(false);
+    setReturnSummary(null);
   };
 
   if (loading)
@@ -65,7 +79,6 @@ const MyRentals = () => {
       </div>
     );
 
-
   return (
     <div className="mt-4">
       <h3 className="mb-4 text-gray-100">My Rentals</h3>
@@ -80,31 +93,57 @@ const MyRentals = () => {
                   <tr>
                     <th className="text-gray-300">Movie</th>
                     <th className="text-gray-300">Date Rented</th>
-                    <th className="text-gray-300">Daily Rate</th>
+                    <th className="text-gray-300">Pricing</th>
                     <th className="text-gray-300">Status</th>
                     <th className="text-gray-300">Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {activeRentals.map(rental => (
-                    <tr key={rental._id}>
-                      <td className="text-gray-200">{rental.movie.title}</td>
-                      <td className="text-gray-300">{new Date(rental.dateOut).toLocaleDateString()}</td>
-                      <td className="text-gray-300">Rs {rental.movie.dailyRentalRate}/day</td>
-                      <td>
-                        <span className="badge bg-success">Rented</span>
-                      </td>
-                      <td>
-                        <button
-                          className="btn btn-sm btn-outline-primary"
-                          onClick={() => handleReturnClick(rental)}
-                          disabled={returning}
-                        >
-                          Return
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                  {activeRentals.map((rental) => {
+                    const title = rental.movieTitle ?? rental.movie?.title;
+                    const rate = rental.dailyRate ?? rental.movie?.dailyRentalRate;
+                    const days = rental.days ?? 1;
+                    const total = rental.totalCost ?? 0;
+                    const paid = rental.initialPayment ?? 0;
+                    const due = rental.remainingAmount ?? 0;
+                    const returnBlocked = rental.paymentStatus === "PENDING";
+
+                    return (
+                      <tr key={rental._id}>
+                        <td className="text-gray-200">{title}</td>
+                        <td className="text-gray-300">
+                          {new Date(rental.dateOut).toLocaleDateString()}
+                        </td>
+                        <td className="text-gray-300 small">
+                          Rs {rate}/day | {days} day{days !== 1 ? "s" : ""} | Total: Rs{" "}
+                          {Number(total).toFixed(0)} | Paid: Rs{" "}
+                          {Number(paid).toFixed(0)} | Due: Rs{" "}
+                          {Number(due).toFixed(0)}
+                        </td>
+                        <td>
+                          {rental.overdue && (
+                            <span className="badge bg-danger me-1">Overdue</span>
+                          )}
+                          <span className="badge bg-success">Active</span>
+                        </td>
+                        <td>
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-outline-primary"
+                            onClick={() => handleReturnClick(rental)}
+                            disabled={returning || loadingSummary || returnBlocked}
+                            title={
+                              returnBlocked
+                                ? "Complete outstanding payment first"
+                                : undefined
+                            }
+                          >
+                            Return
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -123,17 +162,25 @@ const MyRentals = () => {
                     <th className="text-gray-300">Movie</th>
                     <th className="text-gray-300">Date Rented</th>
                     <th className="text-gray-300">Date Returned</th>
-                    <th className="text-gray-300">Amount</th>
+                    <th className="text-gray-300">Final total</th>
                     <th className="text-gray-300">Status</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {returnedRentals.map(rental => (
+                  {returnedRentals.map((rental) => (
                     <tr key={rental._id}>
-                      <td className="text-gray-200">{rental.movie.title}</td>
-                      <td className="text-gray-300">{new Date(rental.dateOut).toLocaleDateString()}</td>
-                      <td className="text-gray-300">{new Date(rental.dateReturned).toLocaleDateString()}</td>
-                      <td className="text-gray-300">Rs {rental.payment?.amount?.toFixed(2) || "0.00"}</td>
+                      <td className="text-gray-200">
+                        {rental.movieTitle ?? rental.movie?.title}
+                      </td>
+                      <td className="text-gray-300">
+                        {new Date(rental.dateOut).toLocaleDateString()}
+                      </td>
+                      <td className="text-gray-300">
+                        {new Date(rental.dateReturned).toLocaleDateString()}
+                      </td>
+                      <td className="text-gray-300">
+                        Rs {Number(rental.totalCost ?? 0).toFixed(2)}
+                      </td>
                       <td>
                         <span className="badge bg-secondary">Paid</span>
                       </td>
@@ -146,14 +193,11 @@ const MyRentals = () => {
         </>
       )}
 
-      {showPayment && selectedRental && (
-        <PaymentModal
-          amount={calculateAmount(selectedRental)}
-          onPay={handlePayment}
-          onClose={() => {
-            setShowPayment(false);
-            setSelectedRental(null);
-          }}
+      {showReturnModal && returnSummary && (
+        <RentReturnModal
+          summary={returnSummary}
+          onClose={closeReturnModal}
+          onCompleteReturn={handleSubmitReturn}
           disabled={returning}
         />
       )}

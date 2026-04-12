@@ -14,8 +14,10 @@ export function getMyRentals() {
   return http.get(apiEndpoint + "/my");
 }
 
-export function returnRental(rentalId, paymentMethod) {
-  return http.post(`${apiEndpoint}/${rentalId}/return`, {
-    paymentMethod
-  });
+export function getRentalSummary(rentalId) {
+  return http.get(`${apiEndpoint}/${rentalId}/summary`);
+}
+
+export function returnRental(rentalId, body) {
+  return http.put(`${apiEndpoint}/${rentalId}/return`, body);
 }

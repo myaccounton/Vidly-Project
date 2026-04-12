@@ -5,6 +5,8 @@ module.exports = {
   MAX_TITLE_LENGTH: 50,
   MAX_RENTALS_REGULAR: 2,
   MAX_RENTALS_GOLD: 5,
+  /** Active rental is flagged overdue when elapsed whole days exceed this threshold. */
+  RENTAL_OVERDUE_DAYS_THRESHOLD: 7,
   ERRORS: {
     INVALID_TOKEN: 'Invalid token',
     ACCESS_DENIED: 'Access denied. No token provided.',

@@ -1,17 +1,26 @@
 import React from "react";
 
-const PaymentModal = ({ amount, onPay, onClose, disabled = false }) => {
+const PaymentModal = ({
+  amount,
+  title = "Payment",
+  movieTitle,
+  dailyRate,
+  subtitle,
+  onPay,
+  onClose,
+  disabled = false,
+}) => {
   return (
     <>
       <div
         className="modal-backdrop show"
         style={{
           backgroundColor: "rgba(0, 0, 0, 0.75)",
-          zIndex: 1040
+          zIndex: 1040,
         }}
         onClick={disabled ? undefined : onClose}
       />
-      
+
       <div
         className="modal d-block"
         style={{ zIndex: 1050 }}
@@ -22,7 +31,7 @@ const PaymentModal = ({ amount, onPay, onClose, disabled = false }) => {
             <div className="modal-header bg-primary text-white">
               <h5 className="modal-title mb-0">
                 <i className="fas fa-credit-card me-2"></i>
-                Payment
+                {title}
               </h5>
               <button
                 type="button"
@@ -34,17 +43,41 @@ const PaymentModal = ({ amount, onPay, onClose, disabled = false }) => {
             </div>
 
             <div className="modal-body p-4">
+              {movieTitle && (
+                <p className="mb-2 text-center fw-semibold">{movieTitle}</p>
+              )}
+              {dailyRate != null && (
+                <p className="mb-2 text-center text-muted small">
+                  Daily rate: Rs {Number(dailyRate).toFixed(0)}/day
+                </p>
+              )}
+              {subtitle != null && subtitle !== "" && (
+                <div className="mb-3 text-center text-muted small">{subtitle}</div>
+              )}
+
               <div className="text-center mb-4">
                 <div className="mb-3">
-                  <div className="fs-6 text-muted mb-1">Total Amount</div>
+                  <div className="fs-6 text-muted mb-1">Amount due</div>
                   <div className="display-6 fw-bold text-primary">
-                    Rs {amount.toFixed(2)}
+                    Rs {Number(amount).toFixed(2)}
                   </div>
                 </div>
               </div>
 
+              {disabled && (
+                <div className="text-center py-2">
+                  <div
+                    className="spinner-border spinner-border-sm text-primary"
+                    role="status"
+                    aria-hidden="true"
+                  />
+                  <span className="ms-2 text-muted small">Processing…</span>
+                </div>
+              )}
+
               <div className="d-grid gap-2">
                 <button
+                  type="button"
                   className="btn btn-success btn-lg"
                   onClick={() => onPay("UPI")}
                   disabled={disabled}
@@ -55,6 +88,7 @@ const PaymentModal = ({ amount, onPay, onClose, disabled = false }) => {
                 </button>
 
                 <button
+                  type="button"
                   className="btn btn-primary btn-lg"
                   onClick={() => onPay("Card")}
                   disabled={disabled}
@@ -65,6 +99,7 @@ const PaymentModal = ({ amount, onPay, onClose, disabled = false }) => {
                 </button>
 
                 <button
+                  type="button"
                   className="btn btn-secondary btn-lg"
                   onClick={() => onPay("Cash")}
                   disabled={disabled}
@@ -78,6 +113,7 @@ const PaymentModal = ({ amount, onPay, onClose, disabled = false }) => {
 
             <div className="modal-footer border-top">
               <button
+                type="button"
                 className="btn btn-outline-secondary"
                 onClick={onClose}
                 disabled={disabled}

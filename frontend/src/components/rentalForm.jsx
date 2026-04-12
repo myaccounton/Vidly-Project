@@ -1,10 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Joi from "joi";
+import { toast } from "react-toastify";
 import useForm from "../hooks/useForm";
 import useFetch from "../hooks/useFetch";
 import useRentals from "../hooks/useRentals";
 import queryString from "query-string";
 import { getMovies } from "../services/movieService";
+import PaymentModal from "./paymentModal";
+
+const PAYMENT_DELAY_MS = 800;
 
 const RentalForm = ({ history, location }) => {
   const schema = {
@@ -41,6 +45,16 @@ const RentalForm = ({ history, location }) => {
 
   const { createRental } = useRentals(false);
 
+  const [showPayment, setShowPayment] = useState(false);
+  const [paying, setPaying] = useState(false);
+
+  const selectedMovie = useMemo(
+    () => movies.find((m) => m._id === data.movieId),
+    [movies, data.movieId]
+  );
+
+  const dailyRate = selectedMovie ? Number(selectedMovie.dailyRentalRate) : 0;
+
   useEffect(() => {
     const { movieId } = queryString.parse(location.search);
     if (movieId) {
@@ -48,15 +62,30 @@ const RentalForm = ({ history, location }) => {
     }
   }, [location.search, setData]);
 
-  const doSubmit = async () => {
-    try {
-      await createRental(data.movieId);
-      history.push("/movies");
-    } catch (ex) {
-      // Error is already handled in the hook
-    }
+  const doSubmit = () => {
+    setShowPayment(true);
   };
 
+  const handleInitialPayment = async (paymentMethod) => {
+    if (!data.movieId || !selectedMovie) return;
+
+    setPaying(true);
+    try {
+      await new Promise((r) => setTimeout(r, PAYMENT_DELAY_MS));
+      toast.success("Payment successful!");
+      await createRental(data.movieId, {
+        initialPayment: dailyRate,
+        paymentStatus: "SUCCESS",
+        paymentMethod,
+      });
+      setShowPayment(false);
+      history.push("/movies");
+    } catch (ex) {
+      // toasts handled in hook / above
+    } finally {
+      setPaying(false);
+    }
+  };
 
   return (
     <div className="col-md-6">
@@ -66,6 +95,19 @@ const RentalForm = ({ history, location }) => {
         {renderSelect("movieId", "Movie", movies, "_id", "title")}
         {renderButton("Confirm Rental")}
       </form>
+
+      {showPayment && selectedMovie && (
+        <PaymentModal
+          title="Pay to start rental"
+          movieTitle={selectedMovie.title}
+          dailyRate={dailyRate}
+          subtitle="Initial charge covers your first day."
+          amount={dailyRate}
+          onPay={handleInitialPayment}
+          onClose={() => !paying && setShowPayment(false)}
+          disabled={paying}
+        />
+      )}
     </div>
   );
 };
